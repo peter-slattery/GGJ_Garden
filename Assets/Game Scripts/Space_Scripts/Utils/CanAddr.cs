@@ -5,6 +5,8 @@ using System;
 // This class describes a Conanical Address, which is taken from the paper
 // "An isomorphism between the p-adic integers and a ring associated with a tiling of N-space by permutohedra"
 // This class assumes Order-3, or 2 dimensional tiling
+
+[System.Serializable]
 public class CanAddr {
 
 	/* ******************

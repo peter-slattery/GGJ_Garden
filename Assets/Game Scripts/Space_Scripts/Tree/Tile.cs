@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Collections;
 
+[System.Serializable]
 public class Tile : TreeObj {
 
 	/* ******************
@@ -104,7 +105,9 @@ public class Tile : TreeObj {
 	Tile[] outRef	= new Tile[NUM_NEIGHBORS];
 	ushort inRef = 0x0000;
 
-	private byte state = 0x00;
+	public byte state = 0x00;
+	public int growth = 0;
+	public string human = "This should be human readable...";
 
 	public Tile (TreeObj prnt, int nextTuple) {
 		this.prnt = prnt;
