@@ -33,6 +33,7 @@ public class PlayerCharacterController : MonoBehaviour {
 				if (target != m_lastTarget) {
 					StopCoroutine ("FindPathToTarget");
 					StartCoroutine ("FindPathToTarget", target);
+					m_lastTarget = target;
 				}
 			}
 		}
