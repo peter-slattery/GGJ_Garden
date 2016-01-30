@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class TileSingleton : MonoBehaviour {
 
-    public List<GameObject> m_prefabs;
+    public List<GameObject> m_tilePrefabs;
 	public bool m_shouldOrientVerticals = true;
 
 	// Use this for initialization
@@ -14,13 +14,13 @@ public class TileSingleton : MonoBehaviour {
 	
 	public GameObject GetPrefabOfType(TileVizController.TileVizType type)
     {
-        if (m_prefabs == null || m_prefabs.Count == 0)
+        if (m_tilePrefabs == null || m_tilePrefabs.Count == 0)
         {
             Debug.Log("GetPrefabOfType: No Prefabs Set");
             return null;
         }
 
-        foreach(GameObject obj in m_prefabs)
+        foreach(GameObject obj in m_tilePrefabs)
         {
             TileVizController controller = obj.GetComponent<TileVizController>();
 

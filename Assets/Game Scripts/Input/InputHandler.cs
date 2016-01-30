@@ -8,7 +8,7 @@ public class InputHandler : MonoBehaviour {
 
 	public float m_minPanSpeed = .005f;
 
-	private InputMode m_mode = InputMode.INTERACT_WORLD;
+	private InputMode m_mode = InputMode.WAITING;
 	private PressState m_pressState = PressState.NO_PRESS;
 
 	private Vector3 m_lastPressVS;
@@ -53,7 +53,7 @@ public class InputHandler : MonoBehaviour {
 			m_lastPressVS = vsPress;
 			m_lastPressWS = wsPress;
 
-			if (m_lastDeltaPressVS.magnitude > m_minPanSpeed) {
+			if (m_mode != InputMode.PAN_CAMERA && m_lastDeltaPressVS.magnitude > m_minPanSpeed) {
 				SetInputMode (InputMode.PAN_CAMERA);
 			}
 
@@ -63,8 +63,10 @@ public class InputHandler : MonoBehaviour {
 			}
 			m_pressState = PressState.FIRST_FRAME_NO_PRESS;
 		} else {
-			SetInputMode (InputMode.WAITING);
-			m_pressState = PressState.NO_PRESS;
+			if (m_pressState == PressState.FIRST_FRAME_NO_PRESS) {
+				SetInputMode (InputMode.WAITING);
+				m_pressState = PressState.NO_PRESS;
+			}
 		}
 	}
 
@@ -115,7 +117,6 @@ public class InputHandler : MonoBehaviour {
 	}
 
 	public void SetInputMode(InputMode newMode) {
-		Debug.Log ("InputState: " + newMode);
 		m_mode = newMode;
 	}
 
