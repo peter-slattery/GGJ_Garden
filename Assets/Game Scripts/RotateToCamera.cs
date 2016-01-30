@@ -13,16 +13,18 @@ public class RotateToCamera : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (!Application.isPlaying) {
+		if (!Application.isPlaying && m_rotateToFace) {
 			FaceCamera ();
 		}
 	}
 
 	void FaceCamera() {
 		if (RotateToCamera.m_rotateToFace) {
-			Vector3 camPos = Camera.main.transform.position;
-			camPos.y = transform.position.y;
-			transform.LookAt (camPos);
+			Vector3 camLook = -Camera.main.transform.forward;
+			camLook.y = 0;
+			camLook.Normalize ();
+			Vector3 lookAtPos = transform.position + camLook;
+			transform.LookAt (lookAtPos);
 		}
 	}
 }
