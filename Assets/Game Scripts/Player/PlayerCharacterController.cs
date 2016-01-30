@@ -16,32 +16,36 @@ public class PlayerCharacterController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		HandlePressInput ();
+		HandleInput ();
 	}
 
-	void HandlePressInput () {
+	public void HandleInput () {
 		if (m_input == null) {
 			Debug.Log ("HandlePressInput: InputHandler Not Found");
 			return;
 		}
 
-		Vector3 target = m_input.GetLastPressWorldCoord ();
-		// Only accept targets on the xz plane
-		if (target.y < 0.001f && target.y > -0.001f) {
-			if (target != m_lastTarget) {
-				StopCoroutine ("FindPathToTarget");
-				StartCoroutine ("FindPathToTarget", target);
+		// Get Mouse Input
+		if (m_input.GetInputMode () == InputHandler.InputMode.INTERACT_WORLD) {
+			Vector3 target = m_input.GetLastPressWorldCoord ();
+			// Only accept targets on the xz plane
+			if (target.y < 0.001f && target.y > -0.001f) {
+				if (target != m_lastTarget) {
+					StopCoroutine ("FindPathToTarget");
+					StartCoroutine ("FindPathToTarget", target);
+				}
 			}
 		}
-
-
 	}
 
 	IEnumerator FindPathToTarget(Vector3 target){
 		float distance_epsilon = 1;
 
-		while (Vector3.Distance (transform.position, target) > distance_epsilon) {
-			Vector3 toTarget = (target - transform.position).normalized;
+		Vector3 targetCorrected = target;
+		targetCorrected.y = transform.position.y;
+
+		while (Vector3.Distance (transform.position, targetCorrected) > distance_epsilon) {
+			Vector3 toTarget = (targetCorrected - transform.position).normalized;
 			transform.Translate (toTarget * m_speed * Time.deltaTime);
 			yield return null;
 		}
