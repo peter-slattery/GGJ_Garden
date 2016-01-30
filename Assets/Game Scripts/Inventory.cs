@@ -1,37 +1,84 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour
 {
-    public List<InventoryItem> tools = new List<InventoryItem>();
-    public List<InventoryItem> collectable = new List<InventoryItem>();
+    public static Inventory _instance;
+    public List<Item> toolsList = new List<Item>();
+    public List<Item> itemsList = new List<Item>();
     public GameObject slotPrefab;
     public Transform slotContainer;
     public Transform itemContainer;
     public int slotCount = 15;
+    public bool isOpen = false;
+
+    void Awake()
+    {
+        _instance = this;
+    }
 
     public void Start ()
     {
-        // Instintate items
         CreateSlots();
+        Close();
     }
 
-    public void CreateSlots()
+    public void Close()
+    {
+        isOpen = false;
+        this.gameObject.SetActive(false);
+    }
+
+    public void Open()
+    {
+        isOpen = true;
+        this.gameObject.SetActive(true);
+        // TODO: Delete current items???
+        DisplayItems();
+    }
+
+    public void Toggle()
+    {
+        if (isOpen)
+        {
+            Close();
+        }
+        else
+        {
+            Open();
+        }
+    }
+
+    void CreateSlots ()
     {
         for (int i = 0; i < slotCount; i++)
         {
-            var slot = Instantiate(slotPrefab) as GameObject;
+            GameObject slot = Instantiate(slotPrefab);
             slot.transform.parent = slotContainer;
         }
     }
 
-    public void AddItem (InventoryItem prefab)
+    void DisplayItems ()
     {
-        // Get and store the prefab type
+        Debug.Log("Item count: " + itemsList.Count);
+        for (int i = 0; i < itemsList.Count; i++)
+        {
+            Debug.Log("Show "+ itemsList[i].Name);
+            GameObject item = new GameObject();
+            item.AddComponent<Image>();
+            //item.sprite = itemsList[i].ItemIcon;
 
-        //GameObject instance = Instantiate(Resources.Load<GameObject>("MrMob"));
-        //GameObject testPrefab = (GameObject)Resources.Load("/Prefabs/yourPrefab");
+            GameObject itemInstance = Instantiate(item);
+            itemInstance.transform.parent = itemContainer;
+        }
+    }
+
+    public void AddItem (GameObject item)
+    {
+        Item inventoryItem = item.GetComponent<Item>();
+        itemsList.Add(inventoryItem);
 
         // Is the picked up item a tool or a collectable?
         // Add item to appropriate array

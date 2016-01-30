@@ -1,10 +1,23 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Item : MonoBehaviour {
-    
+public enum ItemType
+{
+    Tool
+    , Fruit
+    , Seed
+}
 
-	void Start ()
+public class Item : MonoBehaviour {
+
+    public string Name;
+    public string Description;
+    public Sprite ItemIcon;
+    public GameObject ItemModel;
+    //public int Count;
+    //public ItemType Type;
+    
+    void Start ()
     {
 	
 	}
@@ -16,7 +29,7 @@ public class Item : MonoBehaviour {
     
     void OnMouseDown()
     {
-        // this object was clicked - do something
+        Inventory._instance.AddItem(this.gameObject);
         Destroy(this.gameObject);
     }
 }
