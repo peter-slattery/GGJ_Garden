@@ -20,9 +20,6 @@ public class InputHandler : MonoBehaviour {
 			m_pressState = PressState.FIRST_FRAME_DOWN;
 			m_lastPressWS = GetPlanarCoordForScreenCoord (Input.mousePosition);
 
-			GameObject test = GameObject.CreatePrimitive (PrimitiveType.Cube);
-			test.transform.position = m_lastPressWS;
-
 		} else if (Input.GetMouseButton (0)) {
 			m_pressState = PressState.HELD_DOWN;
 			m_lastPressWS = GetPlanarCoordForScreenCoord (Input.mousePosition);
