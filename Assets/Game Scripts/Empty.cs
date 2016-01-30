@@ -7,6 +7,14 @@ public class Empty : MonoBehaviour {
 	void Start () {
 
 	}
+
+	void Update () {
+		if (Input.GetKeyDown (KeyCode.Space)) {
+			GridController.getCurInstance ().updateProperties ();
+			GridController.getCurInstance ().updateState ();
+			Debug.Log ("TS: " + GridController.getCurInstance ().updateDiff.TotalSeconds);
+		}
+	}
 	
 	void OnApplicationQuit() {
 		

@@ -5,7 +5,7 @@ public class GridController : MonoBehaviour {
 
 	public static SpaceGrid curInstance = null;
 
-	public static YieldInstruction SimulationUpdateYield = new WaitForSeconds(0.4f);
+	public static YieldInstruction SimulationUpdateYield = new WaitForSeconds(10.0f);
 
 	public static SpaceGrid getCurInstance () {
 		if (curInstance == null) {

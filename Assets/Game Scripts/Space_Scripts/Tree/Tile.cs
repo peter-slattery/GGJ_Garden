@@ -17,6 +17,20 @@ public class Tile : TreeObj {
 	public static readonly byte TREE_MASK				= 0x20;
 	public static readonly byte ROCK_MASK				= 0x40;
 
+	public static readonly float BLANK_GROWTH_RATE		= 0.2f;
+	public static readonly float TILL_GROWTH_RATE		= 0.0f;
+	public static readonly float WEEDS_GROWTH_RATE		= 0.4f;
+	public static readonly float VINE_GROWTH_RATE		= 0.5f;
+	public static readonly float FLOWERS_GROWTH_RATE	= 0.2f;
+	public static readonly float TREE_GROTH_RATE		= 0.1f;
+	public static readonly float ROCK_GROWTH_RATE		= 0.0f;
+
+	public static readonly float GROWTH_MIN 			= 0.0f;
+	public static readonly float GROWTH_MAX 			= 10.0f;
+	public static readonly float GROWTH_GEN_PARAM 		= 1.0f;
+
+	public static readonly int NUM_GROWTH_LEVELS		= 4;
+
 	public static int NUM_NEIGHBORS = 12;
 	
 	private static LatAddr getNeighborLatOffset (int nIndex) {
@@ -69,7 +83,11 @@ public class Tile : TreeObj {
 	}
 
 	public override void updateProperties () {
-		
+		this.updateGrowth ();
+		Debug.Log ("TS: " + GridController.getCurInstance ().updateDiff.TotalSeconds);
+		for (int i = 0; i < Tile.NUM_NEIGHBORS; i++) {
+			this.AffectNeighbor (i);
+		}
 	}
 
 	public override void inheritState (byte state) {
@@ -105,9 +123,8 @@ public class Tile : TreeObj {
 	Tile[] outRef	= new Tile[NUM_NEIGHBORS];
 	ushort inRef = 0x0000;
 
-	public byte state = 0x00;
-	public int growth = 0;
-	public string human = "This should be human readable...";
+	public byte state = 0x0;
+	public byte growth = 0x0;
 
 	public Tile (TreeObj prnt, int nextTuple) {
 		this.prnt = prnt;
@@ -142,5 +159,13 @@ public class Tile : TreeObj {
 
 	public bool isRock () {
 		return (this.state & Tile.ROCK_MASK) != 0;
+	}
+
+	private void updateGrowth () {
+
+	}
+
+	private void AffectNeighbor (int nIndex) {
+
 	}
 }

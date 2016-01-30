@@ -4,8 +4,12 @@ using System.Collections;
 [System.Serializable]
 public class SpaceGrid {
 
+	public System.DateTime lastUpdate = System.DateTime.UtcNow;
+	public System.DateTime curUpdate = System.DateTime.UtcNow;
+
+	public System.TimeSpan updateDiff;
+
 	public Node rootNode = null;
-	public int propertyIndex = 0;
 	
 	public Tile getTile (CanAddr cAddr) {
 		if (rootNode == null) { rootNode = new Node(); }
@@ -19,7 +23,9 @@ public class SpaceGrid {
 	
 	public void updateProperties () {
 		if (rootNode == null) { rootNode = new Node(); }
-		propertyIndex = (propertyIndex + 1) % 2;
+		lastUpdate = curUpdate;
+		curUpdate = System.DateTime.UtcNow;
+		updateDiff = curUpdate - lastUpdate;
 		rootNode.updateProperties();
 	}
 	

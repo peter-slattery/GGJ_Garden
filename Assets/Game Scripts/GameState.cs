@@ -4,14 +4,12 @@ using System.Collections;
 [System.Serializable]
 public class GameState {
 
-	public System.DateTime 		timeSaved;
 	public SpaceGrid 			gameGrid 	= null;
 
 	// NOTE: This function collects all state to be saved
 	public static GameState prepareGameState () {
 		GameState gS = new GameState ();
 
-		gS.timeSaved	= System.DateTime.UtcNow;
 		gS.gameGrid = GridController.curInstance;
 
 		return gS;
