@@ -95,17 +95,27 @@ public class Tile : TreeObj {
 	}
 
 	public override void setState (CanAddr cAddr, TileTypeController.TileType tileType, float growthLevel) {
-		// TODO: If my current Type is Vine, and new type is not vine, Tell your Vine to kill it's children
-		// TODO: If the new type is Vine, and I'm not currently Vine, create new Vine on my location with lot's of chillren's
+		if (tileType != TileTypeController.TileType.TILE_VINE && this.tileType == TileTypeController.TileType.TILE_VINE) {
+			this.tileType = tileType;
+			this.presentVine.killChildren();
+		}
+
+		if (this.tileType != TileTypeController.TileType.TILE_VINE && this.tileType == TileTypeController.TileType.TILE_VINE) {
+			this.presentVine = new Vine ();
+			this.presentVine.owningTile = this;
+		}
 
 		this.tileType = tileType;
 		this.growthLevel = growthLevel;
 
-		this.growthState = (int) ((Tile.GROWTH_MAX - Tile.GROWTH_MIN) / this.growthLevel);
+		this.growthState = Tile.getGrowthStateForLevel (this.growthLevel);
 		this.fillOutRef ();
 
 		if (this.tileCont != null) {
-			int [] dir = { 0 };
+			if (this.tileType == TileTypeController.TileType.TILE_VINE) {
+				this.tileCont.UpdateTileState(this.tileType, this.growthLevel, this.presentVine.dirs);
+			}
+			int[] dir = { 0 };
 			this.tileCont.UpdateTileState(this.tileType, this.growthLevel, dir);
 		}
 	}
@@ -211,7 +221,9 @@ public class Tile : TreeObj {
 				}
 			}
 			// NOTE: Tile doesn't use the CanAddr param, so it can be null
-			TilledNeighbors [Random.Range (0, TilledNeighbors.Count)].setState (null, TileTypeController.TileType.TILE_BLANK, 0f);
+			if (TilledNeighbors.Count != 0) {
+				TilledNeighbors [Random.Range (0, TilledNeighbors.Count)].setState (null, TileTypeController.TileType.TILE_BLANK, 0f);
+			}
 			break;
 		// NOTE: If adjacent Blank Tile, spread
 		case TileTypeController.TileType.TILE_FLOWERS:
@@ -235,6 +247,7 @@ public class Tile : TreeObj {
 		case TileTypeController.TileType.TILE_WEEDS:
 			if (Random.value > 0.7f) {
 				this.setState (null, TileTypeController.TileType.TILE_VINE, (GROWTH_MAX - GROWTH_MIN) / 2);
+				// TODO: Add some children of the Vine
 			}
 			break;
 		// NOTE: Create adjacent connected vine
@@ -254,16 +267,38 @@ public class Tile : TreeObj {
 					if (validNeighbors [candidateNeighborIndex].tileType == TileTypeController.TileType.TILE_FLOWERS ||
 					    validNeighbors [candidateNeighborIndex].tileType == TileTypeController.TileType.TILE_TREE) {
 						if (validNeighbors [candidateNeighborIndex].growthLevel < (GROWTH_MAX / 2f)) {
-							// TODO: Turn that bitch into a vine yo
+							GrowVineInto (validNeighbors [candidateNeighborIndex]);
 							hasNew = true;
 						}
 					} else {
-						// TODO: Turn that bitch into a vine yo
+						GrowVineInto (validNeighbors [candidateNeighborIndex]);
 						hasNew = true;
 					}
 				}
 			}
 			break;
 		}
+	}
+
+	private void GrowVineInto (Tile tileToGrow) {
+		LatAddr dest = CanAddr.convertCanAddrToLatAddr (tileToGrow.addr);
+		LatAddr src = CanAddr.convertCanAddrToLatAddr (this.addr);
+
+		src.scaleLatAddr (-1);
+		dest.addLatAddr (src);
+
+		CanAddr disp = CanAddr.convertLatAddrToCanAddr (dest);
+
+		tileToGrow.setState (null, TileTypeController.TileType.TILE_VINE, 0f);
+
+		if (this.presentVine != null) {
+			this.presentVine.dirs [this.presentVine.curDirs++] = disp.getTuple (0);
+			this.presentVine.children [disp.getTuple (0)] = tileToGrow.presentVine;
+		}
+
+		tileToGrow.presentVine.dirs [tileToGrow.presentVine.curDirs++] = (int) CanAddr.TUPLE_MASK & ~(disp.getTuple(0));
+
+		this.tileCont.UpdateTileState (this.tileType, this.growthLevel, this.presentVine.dirs);
+		tileToGrow.tileCont.UpdateTileState (tileToGrow.tileType, tileToGrow.growthLevel, tileToGrow.presentVine.dirs);
 	}
 }

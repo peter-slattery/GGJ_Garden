@@ -7,16 +7,18 @@ public class Vine {
 	public const int MAX_CHILDREN = 6;
 
 	public Vine[] children 		= new Vine[MAX_CHILDREN];
-	public int numChildren 		= 0;
-	public Tile gridLocation 	= null;
 
+	public int curDirs = 0;
 	public int[] dirs = new int[6];
+	public Tile owningTile = null;
 
-	public Vine (Tile tile, int numNewChildren) {
-		// TODO: 
-	}
-
-	private void addChild () {
-		// TODO: 
+	public void killChildren () {
+		for (int i = 0; i < MAX_CHILDREN; i++) {
+			if (this.children [i] != null) {
+				this.children [i].killChildren ();
+				this.children [i] = null;
+			}
+		}
+		this.owningTile.setState (null, TileTypeController.TileType.TILE_WEEDS, (Tile.GROWTH_MAX / 2f));
 	}
 }

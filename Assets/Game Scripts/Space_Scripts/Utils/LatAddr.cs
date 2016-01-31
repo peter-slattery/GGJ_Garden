@@ -104,4 +104,12 @@ public class LatAddr {
 
 		this.cleanUpLatAddr();
 	}
+
+	public void scaleLatAddr (int scale) {
+		this.a *= scale;
+		this.b *= scale;
+		this.c *= scale;
+
+		this.cleanUpLatAddr ();
+	}
 }

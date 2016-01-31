@@ -13,7 +13,7 @@ public class CanAddr {
 	 * 	STATIC MEMBERS
 	 * ******************/
 
-	private static byte TUPLE_MASK = 0x07;
+	public const byte TUPLE_MASK = 0x07;
 
 	public static CanAddr convertLatAddrToCanAddr (LatAddr lAddr) {
 		CanAddr result = new CanAddr();
