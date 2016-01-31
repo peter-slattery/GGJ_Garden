@@ -3,5 +3,5 @@ using System.Collections;
 
 public class TilePrefabID : MonoBehaviour {
 
-	public TileTypeController.TileVizType m_type = TileTypeController.TileVizType.TILE_EMPTY;
+	public TileTypeController.TileType m_type = TileTypeController.TileType.TILE_EMPTY;
 }

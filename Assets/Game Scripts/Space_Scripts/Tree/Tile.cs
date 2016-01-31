@@ -129,8 +129,8 @@ public class Tile : TreeObj {
 
 		if (prevGrowthState != this.growthState) {
 			// NOTE: This line requires that the ordering of the TileTypeController.TileVizType matches the Tile type indices at the top of this file
-			TileTypeController.TileVizType curState = (TileTypeController.TileVizType) this.typeIndex;
-			int [] dir = [0];
+			TileTypeController.TileType curState = (TileTypeController.TileType) this.typeIndex;
+			int [] dir = new int[0];
 			this.tileCont.UpdateTileState(curState, this.growth, dir);
 		}
 	}

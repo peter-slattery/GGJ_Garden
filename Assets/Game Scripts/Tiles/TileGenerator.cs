@@ -12,7 +12,7 @@ public class TileGenerator :  MonoBehaviour{
 	public int patch_width = 5;
 	public int patch_height = 5;
 
-	public TileTypeController.TileVizType patch_type;
+	public TileTypeController.TileType patch_type;
 
 	public void GeneratePatch() {
 
