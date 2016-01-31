@@ -246,37 +246,41 @@ public class Tile : TreeObj {
 		// NOTE: Chance to turn to Vine root
 		case TileTypeController.TileType.TILE_WEEDS:
 			if (Random.value > 0.7f) {
-				this.setState (null, TileTypeController.TileType.TILE_VINE, (GROWTH_MAX - GROWTH_MIN) / 2);
-				// TODO: Add some children of the Vine
+				this.setState (null, TileTypeController.TileType.TILE_VINE, 0f);
+				VineSpecial ();
 			}
 			break;
 		// NOTE: Create adjacent connected vine
 		case TileTypeController.TileType.TILE_VINE:
 			if (Random.value > 0.6f) {
-				List<Tile> validNeighbors = new List<Tile> ();
-				for (int i = 0; i < NUM_NEIGHBORS; i++) {
-					if (this.outRef [i].tileType != TileTypeController.TileType.TILE_VINE && 
-						this.outRef [i].tileType != TileTypeController.TileType.TILE_ROCK ) {
-						validNeighbors.Add (this.outRef [i]);
-					}
-				}
-
-				bool hasNew = false;
-				while (!hasNew) {
-					int candidateNeighborIndex = Random.Range (0, validNeighbors.Count);
-					if (validNeighbors [candidateNeighborIndex].tileType == TileTypeController.TileType.TILE_FLOWERS ||
-					    validNeighbors [candidateNeighborIndex].tileType == TileTypeController.TileType.TILE_TREE) {
-						if (validNeighbors [candidateNeighborIndex].growthLevel < (GROWTH_MAX / 2f)) {
-							GrowVineInto (validNeighbors [candidateNeighborIndex]);
-							hasNew = true;
-						}
-					} else {
-						GrowVineInto (validNeighbors [candidateNeighborIndex]);
-						hasNew = true;
-					}
-				}
+				VineSpecial ();
 			}
 			break;
+		}
+	}
+
+	private void VineSpecial () {
+		List<Tile> validNeighbors = new List<Tile> ();
+		for (int i = 0; i < NUM_NEIGHBORS; i++) {
+			if (this.outRef [i].tileType != TileTypeController.TileType.TILE_VINE && 
+				this.outRef [i].tileType != TileTypeController.TileType.TILE_ROCK ) {
+				validNeighbors.Add (this.outRef [i]);
+			}
+		}
+
+		bool hasNew = false;
+		while (!hasNew) {
+			int candidateNeighborIndex = Random.Range (0, validNeighbors.Count);
+			if (validNeighbors [candidateNeighborIndex].tileType == TileTypeController.TileType.TILE_FLOWERS ||
+				validNeighbors [candidateNeighborIndex].tileType == TileTypeController.TileType.TILE_TREE) {
+				if (validNeighbors [candidateNeighborIndex].growthLevel < (GROWTH_MAX / 2f)) {
+					GrowVineInto (validNeighbors [candidateNeighborIndex]);
+					hasNew = true;
+				}
+			} else {
+				GrowVineInto (validNeighbors [candidateNeighborIndex]);
+				hasNew = true;
+			}
 		}
 	}
 
@@ -289,7 +293,7 @@ public class Tile : TreeObj {
 
 		CanAddr disp = CanAddr.convertLatAddrToCanAddr (dest);
 
-		tileToGrow.setState (null, TileTypeController.TileType.TILE_VINE, 0f);
+		tileToGrow.setState (null, TileTypeController.TileType.TILE_VINE, (GROWTH_MAX/2f));
 
 		if (this.presentVine != null) {
 			this.presentVine.dirs [this.presentVine.curDirs++] = disp.getTuple (0);
