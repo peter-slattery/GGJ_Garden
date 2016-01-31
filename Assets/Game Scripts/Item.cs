@@ -11,11 +11,12 @@ public class Item : MonoBehaviour
     public string Description;
     public Sprite ItemIcon;
     public ItemType m_ItemType;
-    public AudioClip PickupSound;
+    public TileTypeController.TileType m_TileType;
     public int PickupProximity = 3;
     public InteractionState m_state = InteractionState.NoInteraction;
     public bool isRemovedFromInventory; // HACK: see the TODO in Inventory.cs > RemoveItem()
-    
+    //public AudioClip PickupSound;
+
     bool isCoroutineRunning = false;
 
     void Update()
