@@ -222,7 +222,7 @@ public class Tile : TreeObj {
 			}
 			// NOTE: Tile doesn't use the CanAddr param, so it can be null
 			if (TilledNeighbors.Count != 0) {
-				TilledNeighbors [Random.Range (0, TilledNeighbors.Count)].setState (null, TileTypeController.TileType.TILE_BLANK, 0f);
+				TilledNeighbors [Random.Range (0, TilledNeighbors.Count-1)].setState (null, TileTypeController.TileType.TILE_BLANK, 0f);
 			}
 			break;
 		// NOTE: If adjacent Blank Tile, spread
