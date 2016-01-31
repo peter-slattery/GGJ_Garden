@@ -59,7 +59,7 @@ public class Inventory : MonoBehaviour
         for (int i = 0; i < bagSize; i++)
         {
             GameObject slot = Instantiate(slotPrefab);
-            slot.transform.parent = slotContainer;
+			slot.transform.SetParent(slotContainer);
         }
     }
 
