@@ -58,11 +58,10 @@ public class Animal : MonoBehaviour
             int randomIndex = Random.Range(0, (attractedTiles.Count-1));
 
             // Go to that tile
-            Vector2 tempPos = GridController.GridToWorld(attractedTiles[randomIndex].addr);
-            Vector3 tilePos = new Vector3(tempPos.x, 0, tempPos.y);
+			Vector3 tilePos = GridController.GridToWorld(attractedTiles[randomIndex].addr);
             DestinationPostion = tilePos;
 
-            Debug.Log(tempPos);
+            //Debug.Log(tempPos);
 
             //for (var i=0; i< attractedTiles.Count; i++)
             //{

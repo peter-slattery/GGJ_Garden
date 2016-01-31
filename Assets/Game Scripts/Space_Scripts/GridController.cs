@@ -33,24 +33,27 @@ public class GridController : MonoBehaviour {
 		}
 	}
 
-	public static Vector2 GridToWorld (CanAddr addr) {
-		Vector2 result = LatAddr.convertLatAddrToVector (CanAddr.convertCanAddrToLatAddr(addr));
+	public static Vector3 GridToWorld (CanAddr addr) {
+		Vector2 tmp = LatAddr.convertLatAddrToVector (CanAddr.convertCanAddrToLatAddr(addr));
+		Vector3 result = new Vector3 (tmp.y, 0, tmp.x);
 		return (result * Config.WorldToGridScale);
 	}
 
-	public static CanAddr WorldToGrid (Vector2 vec) {
+	public static CanAddr WorldToGrid (Vector3 vec) {
 		vec /= Config.WorldToGridScale;
-		CanAddr result = CanAddr.convertLatAddrToCanAddr (LatAddr.convertVectorToLatAddr(vec));
+		Vector2 tmp = new Vector2 (vec.z, vec.x);
+		CanAddr result = CanAddr.convertLatAddrToCanAddr (LatAddr.convertVectorToLatAddr(tmp));
 		return result;
 	}
 
 	public static void CreateGrid (int[] tiles, int arrayWidth) {
 		for (int i = 0; i < tiles.Length; i++) {
-			CanAddr tmp = CanAddr.convertLatAddrToCanAddr(new LatAddr ((i % arrayWidth), ((int) i / arrayWidth), 0));
-			GridController.getCurInstance ().setState (tmp, (TileTypeController.TileType)tiles [i], Random.Range (0f, (Tile.GROWTH_MAX / 3)));
-			Vector2 worldVec = GridController.GridToWorld (tmp);
+			LatAddr lAddr = new LatAddr ((i % arrayWidth), ((int)i / arrayWidth), 0);
+			CanAddr cAddr = CanAddr.convertLatAddrToCanAddr(lAddr);
+			GridController.getCurInstance ().setState (cAddr, (TileTypeController.TileType)tiles [i], Random.Range (0f, (Tile.GROWTH_MAX / 3)));
+			Vector2 worldVec = GridController.GridToWorld (cAddr);
 		}
-		//GridController.CreateVizForCurGrid ();
+		GridController.CreateVizForCurGrid ();
 	}
 
 	public static void CreateVizForCurGrid () {

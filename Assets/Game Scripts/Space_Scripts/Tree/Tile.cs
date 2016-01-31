@@ -20,7 +20,7 @@ public class Tile : TreeObj {
 	//  Order is as follows:
 	//  BLANK, TILLED, WEEDS, VINE, FLOWERS, TREE, ROCK
 	public static readonly float[] TILE_GROWTH_RATES = {
-		0.4f, 0.0f, 0.6f, 0.7f, 0.4f, 0.3f, 0.0f
+		0.4f, 0.0f, 0.6f, 0.7f, 0.4f, 0.3f, 0.0f, 0.0f, 0.0f
 	};
 
 	// NOTE: This matrix defines the effects that plants have on their neighbors.
@@ -30,13 +30,15 @@ public class Tile : TreeObj {
 	//  The ordering is as follows:
 	//   Blank, Tilled, Weeds, Vine, Flower, Tree, rock
 	public static readonly float[,] INTER_TILE_EFFECTS	= {
-		{  0.2f,  0.0f,  0.0f,  0.0f,  0.0f,  0.0f,  0.0f },
-		{  0.0f,  0.0f,  0.0f,  0.0f,  0.0f,  0.0f,  0.0f },
-		{  0.0f,  0.0f,  0.2f,  0.1f, -0.1f, -0.1f,  0.0f },
-		{ -0.2f,  0.0f,  0.1f,  0.2f, -0.2f, -0.4f,  0.0f },
-		{ -0.1f,  0.0f, -0.2f, -0.2f,  0.4f,  0.4f,  0.0f },
-		{ -0.1f,  0.0f, -0.1f, -0.1f, -0.1f, -0.1f,  0.0f },
-		{  0.0f,  0.0f,  0.0f,  0.0f,  0.0f,  0.0f,  0.0f }
+		{  0.2f,  0.0f,  0.0f,  0.0f,  0.0f,  0.0f,  0.0f, 0.0f, 0.0f },
+		{  0.0f,  0.0f,  0.0f,  0.0f,  0.0f,  0.0f,  0.0f, 0.0f, 0.0f },
+		{  0.0f,  0.0f,  0.2f,  0.1f, -0.1f, -0.1f,  0.0f, 0.0f, 0.0f },
+		{ -0.2f,  0.0f,  0.1f,  0.2f, -0.2f, -0.4f,  0.0f, 0.0f, 0.0f },
+		{ -0.1f,  0.0f, -0.2f, -0.2f,  0.4f,  0.4f,  0.0f, 0.0f, 0.0f },
+		{ -0.1f,  0.0f, -0.1f, -0.1f, -0.1f, -0.1f,  0.0f, 0.0f, 0.0f },
+		{  0.0f,  0.0f,  0.0f,  0.0f,  0.0f,  0.0f,  0.0f, 0.0f, 0.0f },
+		{  0.0f,  0.0f,  0.0f,  0.0f,  0.0f,  0.0f,  0.0f, 0.0f, 0.0f },
+		{  0.0f,  0.0f,  0.0f,  0.0f,  0.0f,  0.0f,  0.0f, 0.0f, 0.0f }
 	};
 
 	public static int NUM_NEIGHBORS = 6;
@@ -82,7 +84,7 @@ public class Tile : TreeObj {
 				this.specialAction ();
 			}
 				
-			this.UpdateTileViz ();
+			this.UpdateTileViz (this.tileCont);
 		}
 	}
 
@@ -108,7 +110,7 @@ public class Tile : TreeObj {
 		this.growthState = Tile.getGrowthStateForLevel (this.growthLevel);
 		this.fillOutRef ();
 
-		this.UpdateTileViz ();
+		this.UpdateTileViz (this.tileCont);
 	}
 
 	public override void RegisterController (CanAddr cAddr, TileTypeController tTCont) {
@@ -122,15 +124,10 @@ public class Tile : TreeObj {
 	}
 
 	public override void CreateVizForTile (TileSingleton tS) {
-		Vector2 worldVec = GridController.GridToWorld (this.addr);
-		TileTypeController newTile = (GameObject.Instantiate (tS.m_tileParent, new Vector3 (worldVec.x, 0, worldVec.y), Quaternion.identity) as GameObject).GetComponent<TileTypeController>() as TileTypeController;
-
-		if (this.presentVine != null) {
-			newTile.UpdateTileState (this.tileType, this.growthLevel, this.presentVine.dirs);
-		} else {
-			int[] dirs = { 0 };
-			newTile.UpdateTileState (this.tileType, this.growthLevel, dirs);
-		}
+		Vector3 worldVec = GridController.GridToWorld (this.addr);
+		TileTypeController newTile = (GameObject.Instantiate (tS.m_tileParent, worldVec, Quaternion.identity) as GameObject).GetComponent<TileTypeController>() as TileTypeController;
+		newTile.InitializeTileController ();
+		this.UpdateTileViz (newTile);
 	}
 
 	/* ******************
@@ -188,12 +185,15 @@ public class Tile : TreeObj {
 	}
 
 	private void updateGrowth () {
+		Debug.Log ("THis.TileType: " + (int)this.tileType);
 		this.growthLevel = Mathf.Clamp (this.growthLevel + (Tile.TILE_GROWTH_RATES [(int) this.tileType]), Tile.GROWTH_MIN, Tile.GROWTH_MAX);
 	}
 
 	private void AffectNeighbors () {
 		for (int i = 0; i < Tile.NUM_NEIGHBORS; i++) {
 			if (this.outRef [i] != null) {
+				Debug.Log ("THis.TileType: " + (int)this.tileType);
+				Debug.Log ("That.TileType: " + (int)this.outRef[i].tileType);
 				this.outRef [i].growthLevel = Mathf.Clamp(this.outRef[i].growthLevel + (Tile.INTER_TILE_EFFECTS [(int) this.tileType, (int) this.outRef [i].tileType]), Tile.GROWTH_MIN, Tile.GROWTH_MAX);
 			}
 		}
@@ -311,12 +311,12 @@ public class Tile : TreeObj {
 
 		tileToGrow.presentVine.dirs [tileToGrow.presentVine.curDirs++] = (int) CanAddr.TUPLE_MASK & ~(disp.getTuple(0));
 
-		this.UpdateTileViz ();
-		tileToGrow.UpdateTileViz ();
+		this.UpdateTileViz (this.tileCont);
+		tileToGrow.UpdateTileViz (tileToGrow.tileCont);
 	}
 
-	public void UpdateTileViz () {
-		if (this.tileCont != null) {
+	public void UpdateTileViz (TileTypeController TC) {
+		if (TC != null) {
 			if (this.presentVine != null) {
 				this.tileCont.UpdateTileState (this.tileType, this.growthLevel, this.presentVine.dirs);
 			} else {

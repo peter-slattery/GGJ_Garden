@@ -37,7 +37,7 @@ public class SpaceGrid {
 		rootNode.setState(cAddr, tileType, growthLevel);
 	}
 
-	public void RegisterTile (Vector2 worldPos, TileTypeController.TileType tileType, float growthLevel, TileTypeController tileController) {
+	public void RegisterTile (Vector3 worldPos, TileTypeController.TileType tileType, float growthLevel, TileTypeController tileController) {
 		CanAddr cAddr = GridController.WorldToGrid (worldPos);
 		this.setState (cAddr, tileType, growthLevel);
 		this.rootNode.RegisterController (cAddr, tileController);
