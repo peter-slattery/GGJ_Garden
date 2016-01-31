@@ -100,7 +100,7 @@ public class Tile : TreeObj {
 			this.presentVine.killChildren();
 		}
 
-		if (this.tileType != TileTypeController.TileType.TILE_VINE && this.tileType == TileTypeController.TileType.TILE_VINE) {
+		if (this.tileType != TileTypeController.TileType.TILE_VINE && tileType == TileTypeController.TileType.TILE_VINE) {
 			this.presentVine = new Vine ();
 			this.presentVine.owningTile = this;
 		}
@@ -234,7 +234,9 @@ public class Tile : TreeObj {
 						validNeighbors.Add (this.outRef [i]);
 					}
 				}
-				validNeighbors [Random.Range (0, validNeighbors.Count)].setState (null, TileTypeController.TileType.TILE_FLOWERS, 0f);
+				if (validNeighbors.Count != 0) {
+					validNeighbors [Random.Range (0, validNeighbors.Count-1)].setState (null, TileTypeController.TileType.TILE_FLOWERS, 0f);
+				}
 			}
 			break;
 		// NOTE: Randomly seed new location
@@ -267,7 +269,9 @@ public class Tile : TreeObj {
 				validNeighbors.Add (this.outRef [i]);
 			}
 		}
-
+		if (validNeighbors.Count == 0) {
+			return;
+		}
 		bool hasNew = false;
 		while (!hasNew) {
 			int candidateNeighborIndex = Random.Range (0, validNeighbors.Count);
