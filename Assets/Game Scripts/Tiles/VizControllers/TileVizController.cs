@@ -5,7 +5,7 @@ public class TileVizController : MonoBehaviour {
 
 	public float m_variationRadius = .2f;
 
-	private GameObject m_verticalElements;
+	protected GameObject m_verticalElements;
 
 	// Use this for initialization
 	public virtual void Start () {
