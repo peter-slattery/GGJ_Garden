@@ -44,4 +44,15 @@ public class GridController : MonoBehaviour {
 		}
 		isPaused = true;
 	}
+
+	public static Vector2 GridToWorld (CanAddr addr) {
+		Vector2 result = LatAddr.convertLatAddrToVector (CanAddr.convertCanAddrToLatAddr(addr));
+		return (result / Config.WorldToGridScale);
+	}
+
+	public static CanAddr WorldToGrid (Vector2 vec) {
+		vec *= Config.WorldToGridScale;
+		CanAddr result = CanAddr.convertLatAddrToCanAddr (LatAddr.convertVectorToLatAddr(vec));
+		return result;
+	}
 }
