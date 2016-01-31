@@ -1,18 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+public enum ItemType { Normal, Seed, Tool }
+
 public class Item : MonoBehaviour
 {
     public enum InteractionState { NoInteraction, PendingPickup , ReadyForPickup }
-    //public enum ItemType { Tool , Fruit , Seed }
     
     public string PrefabName;
     public string Description;
     public Sprite ItemIcon;
+    public ItemType m_ItemType;
     public AudioClip PickupSound;
     public int PickupProximity = 3;
     public InteractionState m_state = InteractionState.NoInteraction;
-    //public ItemType m_itemType;
+    public bool isRemovedFromInventory; // HACK: see the TODO in Inventory.cs > RemoveItem()
+    
     bool isCoroutineRunning = false;
 
     void Update()

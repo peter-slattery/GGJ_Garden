@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class Inventory : MonoBehaviour
 {
@@ -75,18 +76,25 @@ public class Inventory : MonoBehaviour
         {
             GameObject.Destroy(child.gameObject);
         }
+
         // Add items again
-        Debug.Log("Item count: " + itemsList.Count);
         for (int i = 0; i < itemsList.Count; i++)
         {
-            GameObject item = new GameObject();
-            item.AddComponent<Image>();
-            item.AddComponent<InventoryItem>();
-            item.GetComponent<InventoryItem>().Index = i;
-            item.AddComponent<CanvasGroup>();
-            item.AddComponent<Button>();
-            item.GetComponent<Image>().sprite = itemsList[i].ItemIcon;
-            item.transform.SetParent(itemContainer);
+            int index = i; // Store it in a variable because for whatever reason it doesn't get the right i in UseItem and Index without it :/ 
+
+            if (!itemsList[i].isRemovedFromInventory)  // HACK: see the TODO in Inventory.cs > RemoveItem()
+            {
+                GameObject item = new GameObject();
+                item.AddComponent<Image>();
+                item.AddComponent<InventoryItem>();
+                item.GetComponent<InventoryItem>().Index = i;
+                item.name = "item_" + index;
+                item.AddComponent<CanvasGroup>();
+                item.AddComponent<Button>();
+                item.GetComponent<Button>().onClick.AddListener(() => { UseItem(index); });
+                item.GetComponent<Image>().sprite = itemsList[i].ItemIcon;
+                item.transform.SetParent(itemContainer);
+            }
         }
     }
 
@@ -104,9 +112,28 @@ public class Inventory : MonoBehaviour
         }        
     }
 
-    public void UseTool()
+    public void UseItem(int index)
     {
-        // 
+        Item currItem = itemsList[index];
+        ItemType itemType = currItem.m_ItemType;
+        GameObject currGameObject = GameObject.Find("EventSystem").GetComponent<EventSystem>().currentSelectedGameObject;
+
+        Debug.Log(itemType);
+
+        switch (itemType)
+        {
+            case ItemType.Seed:
+                Debug.Log("Plant a Seed");
+                RemoveItem(index, currGameObject);
+                break;
+            case ItemType.Tool:
+                Debug.Log("Do a tool thing");
+                break;
+            case ItemType.Normal:
+                break;
+            default:
+                break;
+        }
     }
 
     public void DropItem(GameObject item)
@@ -119,9 +146,18 @@ public class Inventory : MonoBehaviour
         // Create a new item of the object type where the player is
         GameObject dropppedItem = Instantiate(Resources.Load(currItem.PrefabName)) as GameObject;
         dropppedItem.transform.position = Object.FindObjectOfType<PlayerCharacterController>().transform.position;
-        
-        // Remove item from list
-        itemsList.Remove(currItem);
-        Destroy(item);
+
+        RemoveItem(index, item);
     }
+
+    void RemoveItem(int index, GameObject physicalRepresentation)
+    {
+        // TODO: Optimize this....The lists change index when you delete things, and we need the index to be correct to delete items. For now, I'm setting a bool to null and keeping the removed item in the list, but there's got to be a better way.
+        // "Remove" item from list
+        Item currItem = itemsList[index];
+        currItem.isRemovedFromInventory = true;
+        // Destroy sprite
+        Destroy(physicalRepresentation);
+    }
+
 }

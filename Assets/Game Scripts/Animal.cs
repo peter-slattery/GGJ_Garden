@@ -49,7 +49,7 @@ public class Animal : MonoBehaviour
     {
         canMoveAgain = false;
 
-        if (AttractedTile != null)
+        if (AttractedTile == TileTypeController.TileType.TILE_BLANK)
         {
             // to turn grid to world position do xy to xz of vector3
             List<Tile> attractedTiles = GridController.getCurInstance().QueryForTileType(AttractedTile);
