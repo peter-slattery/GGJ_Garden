@@ -26,12 +26,20 @@ public class Inventory : MonoBehaviour
 
     public void Close()
     {
+        // Prevent Player from walking when doing inventory clicks
+        InputHandler inputHandler = FindObjectOfType(typeof(InputHandler)) as InputHandler;
+        inputHandler.CloseInventory();
+
         isOpen = false;
         this.gameObject.SetActive(false);
     }
 
     public void Open()
     {
+        // Prevent Player from walking when doing inventory clicks
+        InputHandler inputHandler = FindObjectOfType(typeof(InputHandler)) as InputHandler;
+        inputHandler.OpenInventory();
+
         isOpen = true;
         this.gameObject.SetActive(true);
         DisplayItems();
@@ -39,10 +47,6 @@ public class Inventory : MonoBehaviour
 
     public void Toggle()
     {
-        // Prevent Player from walking when doing inventory clicks
-        InputHandler inputHandler = FindObjectOfType(typeof (InputHandler)) as InputHandler;
-        inputHandler.toggleInventory();
-
         // Toggle visibility
         if (isOpen)
         {

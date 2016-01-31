@@ -50,5 +50,10 @@ public class PlayerCharacterController : MonoBehaviour {
 			transform.Translate (toTarget * m_speed * Time.deltaTime);
 			yield return null;
 		}
-	}
+    }
+
+    void OnMouseDown()
+    {
+        Inventory._instance.Open();
+    }
 }

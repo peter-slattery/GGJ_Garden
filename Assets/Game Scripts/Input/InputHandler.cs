@@ -116,18 +116,15 @@ public class InputHandler : MonoBehaviour {
 		return m_mode;
 	}
 
-    public void toggleInventory()
+    public void OpenInventory()
     {
-        if (m_mode == InputMode.IN_INVENTORY)
-        {
-            m_mode = InputMode.WAITING;
-        }
-        else
-        {
-            m_mode = InputMode.IN_INVENTORY;
-        }
+        m_mode = InputMode.IN_INVENTORY;
     }
-
+    public void CloseInventory()
+    {
+        m_mode = m_mode = InputMode.WAITING;
+    }
+    
 	public PressState GetPressState() {
 		return m_pressState;
 	}

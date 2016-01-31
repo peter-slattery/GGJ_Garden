@@ -10,6 +10,7 @@ public class Item : MonoBehaviour
     public string Description;
     public Sprite ItemIcon;
     public AudioClip PickupSound;
+    public int PickupProximity = 3;
     public InteractionState m_state = InteractionState.NoInteraction;
     //public ItemType m_itemType;
 
@@ -52,7 +53,7 @@ public class Item : MonoBehaviour
         Vector3 playerPosition = Object.FindObjectOfType<PlayerCharacterController>().transform.position;
         float distanceToPlayer = Vector3.Distance(this.transform.position, playerPosition);
 
-        if (distanceToPlayer < 2)
+        if (distanceToPlayer < PickupProximity)
         {
             m_state = InteractionState.ReadyForPickup;
         }
