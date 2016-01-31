@@ -22,20 +22,10 @@ public class Node : TreeObj {
 				children[childIndex] = new Tile (this, childIndex);
 			}
 			else { children[childIndex] = new Node(this, childIndex); }
-			this.children[childIndex].inheritState(this.childState[childIndex]);
 		}
 		return children[childIndex].getTile(cAddr);
 	}
-
-	public override void removalRequest (int childIndex) {
-		this.children[childIndex] = null;
-
-		if (!this.livingChildrenCheck() && this.homogeneousChildrenCheck() && this.prnt != null) {
-			this.prnt.removalRequest(this.addr.getTuple(this.aggLev));
-		}
-	}
-
-	// NOTE: I don't need to update my state here, as I will be notified of any child state change
+		
 	public override void updateState () {
 		for (int i = 0; i < NUM_CHILDREN; i++) {
 			if (children[i] != null) {
@@ -51,33 +41,22 @@ public class Node : TreeObj {
 			}
 		}
 	}
-	
-	public override void notifyStateChange (int childIndex, byte childState) {
-		this.childState[childIndex] = childState;
-		if (this.homogeneousChildrenCheck() && this.prnt != null) {
-			this.prnt.notifyStateChange(this.addr.getTuple(this.aggLev), this.childState[0]);
-		}
-	}
 
-	public override void inheritState (byte state) {
-		for (int i = 0; i < NUM_CHILDREN; i++) { this.childState[i] = state; }
-	}
-
-	public override void setState (CanAddr cAddr, byte state) {
+	public override void setState (CanAddr cAddr, byte tileType, float growthLevel, TileTypeController tTController) {
 		int childIndex = (int) cAddr.getTuple(this.aggLev - 1);
 
 		if (children[childIndex] == null) {
 			if (this.aggLev == 1) {
-				this.childState[childIndex] = state;
+				this.children[childIndex] = new Tile (this, childIndex);
+				this.children[childIndex].setState(cAddr, tileType, growthLevel, tTController);
 			}
 			else {
 				this.children[childIndex] = new Node (this, childIndex);
-				this.children[childIndex].inheritState (this.childState[childIndex]);
-				this.children[childIndex].setState(cAddr, state);
+				this.children[childIndex].setState(cAddr, tileType, growthLevel, tTController);
 			}
 		}
 		else {
-			children[childIndex].setState(cAddr, state);
+			children[childIndex].setState(cAddr, tileType, growthLevel, tTController);
 		}
 	}
 
@@ -86,8 +65,6 @@ public class Node : TreeObj {
 	 * ******************/
 
 	private TreeObj[] children = new TreeObj[NUM_CHILDREN];
-	
-	private byte[] childState = new byte[NUM_CHILDREN];
 	
 	public Node () {
 		this.prnt = null;
@@ -106,14 +83,5 @@ public class Node : TreeObj {
 		bool livingChildren = false;
 		for (int i = 0; i < NUM_CHILDREN; i++) 		{ livingChildren = livingChildren | (this.children[i] != null); }
 		return livingChildren;
-	}
-
-	private bool homogeneousChildrenCheck () {
-		byte cState = this.childState[0];
-		bool homogeneousChildren = true;
-
-		for (int i = 1; i < NUM_CHILDREN; i++)	{ homogeneousChildren = homogeneousChildren & (cState == this.childState[i]); }
-
-		return homogeneousChildren;
 	}
 }

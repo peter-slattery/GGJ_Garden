@@ -9,27 +9,53 @@ public class Tile : TreeObj {
 	 * 	STATIC MEMBERS
 	 * ******************/
 
-	public static readonly byte BLANK_MASK 				= 0x01;
-	public static readonly byte TILL_MASK 				= 0x02;
-	public static readonly byte WEEDS_MASK	 			= 0x04;
-	public static readonly byte VINE_MASK				= 0x08;
-	public static readonly byte FLOWERS_MASK			= 0x10;
-	public static readonly byte TREE_MASK				= 0x20;
-	public static readonly byte ROCK_MASK				= 0x40;
-
-	public static readonly float BLANK_GROWTH_RATE		= 0.2f;
-	public static readonly float TILL_GROWTH_RATE		= 0.0f;
-	public static readonly float WEEDS_GROWTH_RATE		= 0.4f;
-	public static readonly float VINE_GROWTH_RATE		= 0.5f;
-	public static readonly float FLOWERS_GROWTH_RATE	= 0.2f;
-	public static readonly float TREE_GROTH_RATE		= 0.1f;
-	public static readonly float ROCK_GROWTH_RATE		= 0.0f;
-
+	// NOTE: MIN and MAX determine range for valid growth values
 	public static readonly float GROWTH_MIN 			= 0.0f;
 	public static readonly float GROWTH_MAX 			= 10.0f;
-	public static readonly float GROWTH_GEN_PARAM 		= 1.0f;
 
+	// NOTE: Growth levels are stored by the growthState variable and range from [0, NUM_GROWTH_LEVELS-1]
 	public static readonly int NUM_GROWTH_LEVELS		= 4;
+
+	public static readonly float TIME_UNIT_STANDARD		= 10.0f;
+
+	public static readonly ushort BLANK_INDEX	= 0;
+	public static readonly ushort TILLED_INDEX	= 1;
+	public static readonly ushort WEEDS_INDEX	= 2;
+	public static readonly ushort VINE_INDEX	= 3;
+	public static readonly ushort FLOWERS_INDEX	= 4;
+	public static readonly ushort TREE_INDEX	= 5;
+	public static readonly ushort ROCK_INDEX	= 6;
+
+	public const byte BLANK_MASK 	= 0x01;
+	public const byte TILL_MASK 	= 0x02;
+	public const byte WEEDS_MASK	= 0x04;
+	public const byte VINE_MASK 	= 0x08;
+	public const byte FLOWERS_MASK	= 0x10;
+	public const byte TREE_MASK 	= 0x20;
+	public const byte ROCK_MASK		= 0x40;
+
+	// NOTE: This array defines the growth rates of the different tile types
+	//  Order is as follows:
+	//  BLANK, TILLED, WEEDS, VINE, FLOWERS, TREE, ROCK
+	public static readonly float[] TILE_GROWTH_RATES = {
+		0.4f, 0.0f, 0.6f, 0.7f, 0.4f, 0.3f, 0.0f
+	};
+
+	// NOTE: This matrix defines the effects that plants have on their neighbors.
+	//  These entries are added to the 
+	//  The structure of this matrix is as follows:
+	//   [effector, effectee]
+	//  The ordering is as follows:
+	//   Blank, Tilled, Weeds, Vine, Flower, Tree, rock
+	public static readonly float[,] INTER_TILE_EFFECTS	= {
+		{  0.2f,  0.0f,  0.0f,  0.0f,  0.0f,  0.0f,  0.0f },
+		{  0.0f,  0.0f,  0.0f,  0.0f,  0.0f,  0.0f,  0.0f },
+		{  0.0f,  0.0f,  0.2f,  0.1f, -0.1f, -0.1f,  0.0f },
+		{ -0.2f,  0.0f,  0.1f,  0.2f, -0.2f, -0.4f,  0.0f },
+		{ -0.1f,  0.0f, -0.2f, -0.2f,  0.4f,  0.4f,  0.0f },
+		{ -0.1f,  0.0f, -0.1f, -0.1f, -0.1f, -0.1f,  0.0f },
+		{  0.0f,  0.0f,  0.0f,  0.0f,  0.0f,  0.0f,  0.0f }
+	};
 
 	public static int NUM_NEIGHBORS = 12;
 	
@@ -65,6 +91,28 @@ public class Tile : TreeObj {
 		}
 	}
 
+	private static ushort typeIndexForState (byte state) {
+		switch (state) {
+		case BLANK_MASK:
+			return 0;
+		case TILL_MASK:
+			return 1;
+		case WEEDS_MASK:
+			return 2;
+		case VINE_MASK:
+			return 3;
+		case FLOWERS_MASK:
+			return 4;
+		case TREE_MASK:
+			return 5;
+		case ROCK_MASK:
+			return 6;
+		default: 
+			Debug.LogError ("Invalid tile type state");
+			return 0;
+		}
+	}
+
 	/* ******************
 	 * 	TREEOBJ MEMBERS
 	 * ******************/
@@ -72,48 +120,31 @@ public class Tile : TreeObj {
 	public override Tile getTile (CanAddr cAddr) {
 		return this;
 	}
-		
-	// TODO: The contents of these two methods are temporary, and should be replaced when you have a better understanding of the fire simulation
-	public override void updateState () {
-		byte prevStatus = this.state;
 
-		if (prevStatus != this.state) {
-			this.prnt.notifyStateChange(this.addr.getTuple(this.aggLev), this.state);
+	// TODO: This function will need to have things added for the different plant behaviors (spread, seed, etc.)
+	public override void updateState () {
+		int prevGrowthState = this.growthState;
+
+		this.growthState = (int)((Tile.GROWTH_MAX - Tile.GROWTH_MIN) / this.growth);
+
+		if (prevGrowthState != this.growthState) {
+			// NOTE: This line requires that the ordering of the TileTypeController.TileVizType matches the Tile type indices at the top of this file
+			TileTypeController.TileVizType curState = (TileTypeController.TileVizType) this.typeIndex;
+			int [] dir = [0];
+			this.tileCont.UpdateTileState(curState, this.growth, dir);
 		}
 	}
 
 	public override void updateProperties () {
 		this.updateGrowth ();
-		Debug.Log ("TS: " + GridController.getCurInstance ().updateDiff.TotalSeconds);
-		for (int i = 0; i < Tile.NUM_NEIGHBORS; i++) {
-			this.AffectNeighbor (i);
-		}
+		this.AffectNeighbors ();
 	}
 
-	public override void inheritState (byte state) {
-		this.state = state;
-	}
-
-	public override void setState (CanAddr cAddr, byte state) {
-		this.state = state;
-		this.prnt.notifyStateChange(this.addr.getTuple(this.aggLev), this.state);
-	}
-
-	// Both of these methods should be NO-OPS.
-	// Tiles won't have children who report state change to them.
-	public override void notifyStateChange (int childIndex, byte childStatus) {}
-	public override void removalRequest (int childIndex) {}
-	
-	public void notifyReferenceAddition (int index) {
-		this.inRef = (ushort) (this.inRef | (0x01 << index));
-	}
-
-	public void notifyReferenceRemoval (int index) {
-		this.inRef = (ushort) (this.inRef & ~(0x01 << index));
-
-		if (this.inRef == 0 && !this.isBlank()) {
-			this.prnt.removalRequest(this.addr.getTuple(this.aggLev));
-		}
+	public override void setState (CanAddr cAddr, byte tileType, float growthLevel, TileTypeController tTController) {
+		this.tileType = tileType;
+		this.typeIndex = Tile.typeIndexForState (this.tileType);
+		this.growthState = growthState;
+		this.tileCont = tTController;
 	}
 
 	/* ******************
@@ -121,10 +152,13 @@ public class Tile : TreeObj {
 	 * ******************/
 
 	Tile[] outRef	= new Tile[NUM_NEIGHBORS];
-	ushort inRef = 0x0000;
 
-	public byte state = 0x0;
-	public byte growth = 0x0;
+	public byte		tileType	= 0x0;
+	public ushort	typeIndex	= 0;
+	public float	growth		= 0x0;
+	public int		growthState	= 0;
+
+	public TileTypeController tileCont = null;
 
 	public Tile (TreeObj prnt, int nextTuple) {
 		this.prnt = prnt;
@@ -134,38 +168,42 @@ public class Tile : TreeObj {
 	}
 
 	public bool isBlank () {
-		return (this.state & Tile.BLANK_MASK) != 0;
+		return (this.tileType & Tile.BLANK_MASK) != 0;
 	}
 
 	public bool isTilled () {
-		return (this.state & Tile.TILL_MASK) != 0;
+		return (this.tileType & Tile.TILL_MASK) != 0;
 	}
 
 	public bool hasWeeds () {
-		return (this.state & Tile.WEEDS_MASK) != 0;
+		return (this.tileType & Tile.WEEDS_MASK) != 0;
 	}
 
 	public bool hasVine () {
-		return (this.state & Tile.VINE_MASK) != 0;
+		return (this.tileType & Tile.VINE_MASK) != 0;
 	}
 
 	public bool hasFlowers () {
-		return (this.state & Tile.FLOWERS_MASK) != 0;
+		return (this.tileType & Tile.FLOWERS_MASK) != 0;
 	}
 
 	public bool hasTree () {
-		return (this.state & Tile.TREE_MASK) != 0;
+		return (this.tileType & Tile.TREE_MASK) != 0;
 	}
 
 	public bool isRock () {
-		return (this.state & Tile.ROCK_MASK) != 0;
+		return (this.tileType & Tile.ROCK_MASK) != 0;
 	}
 
 	private void updateGrowth () {
-
+		float timeStep = (float) GridController.getCurInstance ().updateDiff.TotalSeconds / Tile.TIME_UNIT_STANDARD;
+		this.growth += Tile.TILE_GROWTH_RATES [this.typeIndex] * timeStep;
 	}
 
-	private void AffectNeighbor (int nIndex) {
-
+	private void AffectNeighbors () {
+		float timeStep = (float) GridController.getCurInstance ().updateDiff.TotalSeconds / Tile.TIME_UNIT_STANDARD;
+		for (int i = 0; i < Tile.NUM_NEIGHBORS; i++) {
+			this.outRef [i].growth += Tile.INTER_TILE_EFFECTS [this.typeIndex, this.outRef [i].typeIndex] * timeStep;
+		}
 	}
 }
