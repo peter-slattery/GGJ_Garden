@@ -50,8 +50,8 @@ public class GridController : MonoBehaviour {
 		for (int i = 0; i < tiles.Length; i++) {
 			LatAddr lAddr = new LatAddr ((i % arrayWidth), ((int)i / arrayWidth), 0);
 			CanAddr cAddr = CanAddr.convertLatAddrToCanAddr(lAddr);
-			GridController.getCurInstance ().setState (cAddr, (TileTypeController.TileType)tiles [i], Random.Range (0f, (Tile.GROWTH_MAX / 3)));
-			Vector2 worldVec = GridController.GridToWorld (cAddr);
+			TileTypeController.TileType newTileType = (TileTypeController.TileType)tiles [i];
+			GridController.getCurInstance ().setState (cAddr, newTileType, Random.Range (0f, (Tile.GROWTH_MAX / 3)));
 		}
 		GridController.CreateVizForCurGrid ();
 	}

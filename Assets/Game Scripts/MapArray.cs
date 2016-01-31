@@ -3,9 +3,9 @@ using System.Collections;
 
 public class MapArray {
 
-	public static int mapWidth = 5;
+	public static int mapWidth = 20;
 
-	public static int[] mapIntArray = {
+	public static int[] testArray = {
 		0, 0, 0, 0, 0,
 		0, 0, 0, 0, 0,
 		0, 0, 0, 0, 0,
@@ -13,7 +13,7 @@ public class MapArray {
 		0, 0, 0, 0, 0
 	};
 
-	public static int[] ORIG_Array = {
+	public static int[] mapIntArray = {
 		0, 0, 0, 0, 0, 0, 0, 4, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0,
 		0, 0, 0, 0, 0, 0, 2, 0, 2, 4, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0,
 		0, 0, 0, 0, 0, 2, 0, 0, 0, 2, 2, 2, 2, 0, 0, 0, 0, 0, 0, 0,

@@ -37,13 +37,15 @@ public class TileTypeController : MonoBehaviour {
 		UpdateTileState (m_tileType, m_tileGrowth, test);
 	}
 
-	public void InitializeTileController() {
+	public void InitializeTileController(bool register=true) {
 		if (!m_initialized) {
 			CreateVisualizationForType ();
 
 			// RegisterTile(position, Tile (byte) type, float Growth Level, TileVizController this)
 
-			GridController.getCurInstance ().RegisterTile (transform.position, m_tileType, m_tileGrowth, this);
+			if (register) {
+				GridController.getCurInstance ().RegisterTile (transform.position, m_tileType, m_tileGrowth, this);
+			}
 
 			m_initialized = true;
 		}

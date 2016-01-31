@@ -100,11 +100,11 @@ public class Tile : TreeObj {
 	}
 
 	public override void setState (CanAddr cAddr, TileTypeController.TileType tileType, float growthLevel) {
-		if (this.tileType == TileTypeController.TileType.TILE_BLANK ||
-		    this.tileType == TileTypeController.TileType.TILE_FLOWERS	||
-		    this.tileType == TileTypeController.TileType.TILE_WEEDS ||
-		    this.tileType == TileTypeController.TileType.TILE_VINE ||
-		    this.tileType == TileTypeController.TileType.TILE_TREE) { 
+		if (tileType == TileTypeController.TileType.TILE_BLANK 		||
+		    tileType == TileTypeController.TileType.TILE_FLOWERS	||
+		    tileType == TileTypeController.TileType.TILE_WEEDS 		||
+		    tileType == TileTypeController.TileType.TILE_VINE 		||
+		    tileType == TileTypeController.TileType.TILE_TREE) { 
 			this.isActiveType = true;
 		} else {
 			this.isActiveType = false;
@@ -142,7 +142,7 @@ public class Tile : TreeObj {
 	public override void CreateVizForTile (TileSingleton tS) {
 		Vector3 worldVec = GridController.GridToWorld (this.addr);
 		TileTypeController newTile = (GameObject.Instantiate (tS.m_tileParent, worldVec, Quaternion.identity) as GameObject).GetComponent<TileTypeController>() as TileTypeController;
-		newTile.InitializeTileController ();
+		newTile.InitializeTileController (false);
 		this.UpdateTileViz (newTile);
 	}
 
@@ -152,10 +152,10 @@ public class Tile : TreeObj {
 
 	Tile[] outRef	= new Tile[NUM_NEIGHBORS];
 
-	public TileTypeController.TileType	tileType	= TileTypeController.TileType.TILE_ROCK;
-	public float						growthLevel	= 0x0;
-	public int							growthState	= 0;
-	public bool 						isActiveType 	= false;
+	public TileTypeController.TileType	tileType		= TileTypeController.TileType.TILE_ROCK;
+	public float						growthLevel		= 0x0;
+	public int							growthState		= 0;
+	public bool 						isActiveType	= false;
 
 	public TileTypeController tileCont = null;
 
@@ -170,7 +170,6 @@ public class Tile : TreeObj {
 
 		this.tileType = TileTypeController.TileType.TILE_ROCK;
 		this.growthState = 0;
-		this.fillOutRef ();
 	}
 
 	public bool isBlank () {
@@ -202,15 +201,12 @@ public class Tile : TreeObj {
 	}
 
 	private void updateGrowth () {
-		Debug.Log ("THis.TileType: " + (int)this.tileType);
 		this.growthLevel = Mathf.Clamp (this.growthLevel + (Tile.TILE_GROWTH_RATES [(int) this.tileType]), Tile.GROWTH_MIN, Tile.GROWTH_MAX);
 	}
 
 	private void AffectNeighbors () {
 		for (int i = 0; i < Tile.NUM_NEIGHBORS; i++) {
 			if (this.outRef [i] != null) {
-				Debug.Log ("THis.TileType: " + (int)this.tileType);
-				Debug.Log ("That.TileType: " + (int)this.outRef[i].tileType);
 				this.outRef [i].growthLevel = Mathf.Clamp(this.outRef[i].growthLevel + (Tile.INTER_TILE_EFFECTS [(int) this.tileType, (int) this.outRef [i].tileType]), Tile.GROWTH_MIN, Tile.GROWTH_MAX);
 			}
 		}
@@ -336,10 +332,10 @@ public class Tile : TreeObj {
 	public void UpdateTileViz (TileTypeController TC) {
 		if (TC != null) {
 			if (this.presentVine != null) {
-				this.tileCont.UpdateTileState (this.tileType, this.growthLevel, this.presentVine.dirs);
+				TC.UpdateTileState (this.tileType, this.growthLevel, this.presentVine.dirs);
 			} else {
 				int[] dirs = { 0 };
-				this.tileCont.UpdateTileState (this.tileType, this.growthLevel, dirs);
+				TC.UpdateTileState (this.tileType, this.growthLevel, dirs);
 			}
 		}
 	}

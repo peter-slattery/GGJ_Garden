@@ -29,13 +29,14 @@ public class SpaceGrid {
 		updateDiff = curUpdate - lastUpdate;
 		int numUpdates = (int) (updateDiff.TotalSeconds/Config.TIME_UNIT_STANDARD);
 		for (int i = 0; i < numUpdates; i++) {
-			int numTiles = 1;
+			int numTiles = 20;
 			for (int j = 0; j < numTiles; j++) {
 				int TileToUpdate = Random.Range (0, MapArray.mapIntArray.Length);
 				CanAddr cAddr = CanAddr.convertLatAddrToCanAddr (new LatAddr ((i % MapArray.mapWidth), ((int)i / MapArray.mapWidth), 0));
 				rootNode.updateProperties (cAddr);
 			}
 		}
+
 	}
 	
 	public void setState (CanAddr cAddr, TileTypeController.TileType tileType, float growthLevel) {
