@@ -3,11 +3,11 @@ using System.Collections;
 
 public class ButtonManager : MonoBehaviour {
 
-    public Transform _instance;
+    public static ButtonManager _instance;
 
 	void Awake ()
     {
-        _instance = this.transform;
+        _instance = this;
     }
 
     void Update()

@@ -36,4 +36,9 @@ public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
             transform.position = startPosition;
         }
     }
+
+    void OnMouseDown()
+    {
+        Debug.Log("MOUSE DOWN");
+    }
 }

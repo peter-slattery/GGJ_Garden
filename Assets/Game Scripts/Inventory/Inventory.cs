@@ -84,6 +84,7 @@ public class Inventory : MonoBehaviour
             item.AddComponent<InventoryItem>();
             item.GetComponent<InventoryItem>().Index = i;
             item.AddComponent<CanvasGroup>();
+            item.AddComponent<Button>();
             item.GetComponent<Image>().sprite = itemsList[i].ItemIcon;
             item.transform.SetParent(itemContainer);
         }
