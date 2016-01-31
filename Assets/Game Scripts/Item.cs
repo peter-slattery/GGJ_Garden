@@ -13,10 +13,11 @@ public class Item : MonoBehaviour
     public int PickupProximity = 3;
     public InteractionState m_state = InteractionState.NoInteraction;
     //public ItemType m_itemType;
+    bool isCoroutineRunning = false;
 
     void Update()
     {
-        if (m_state == InteractionState.PendingPickup)
+        if (!isCoroutineRunning && m_state == InteractionState.PendingPickup)
         {
             StartCoroutine("ProximityCheck");
         }
@@ -42,8 +43,10 @@ public class Item : MonoBehaviour
     {
         for (;;)
         {
+            isCoroutineRunning = true;
             PlayerProximityPickup();
             yield return new WaitForSeconds(.5f);
+            isCoroutineRunning = false;
         }
     }
 

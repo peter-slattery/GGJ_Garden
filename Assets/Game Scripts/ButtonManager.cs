@@ -8,12 +8,20 @@ public class ButtonManager : MonoBehaviour {
 	void Awake ()
     {
         _instance = this.transform;
-	}
-	
-	//public void OpenInventory ()
- //   {
- //       Inventory._instance.Open();
- //   }
+    }
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            Inventory._instance.Toggle();
+        }
+    }
+
+    //public void OpenInventory ()
+    //   {
+    //       Inventory._instance.Open();
+    //   }
     public void CloseInventory()
     {
         Inventory._instance.Close();

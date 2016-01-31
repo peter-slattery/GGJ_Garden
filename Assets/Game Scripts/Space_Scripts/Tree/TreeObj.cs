@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public abstract class TreeObj {
 
 	protected TreeObj prnt;
-	protected CanAddr addr;
+	public CanAddr addr;
 	protected int aggLev;
 
 	public CanAddr Address
