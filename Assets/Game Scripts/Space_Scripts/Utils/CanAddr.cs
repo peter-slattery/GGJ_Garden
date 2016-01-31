@@ -97,7 +97,7 @@ public class CanAddr {
 		this.val = (UInt32) this.val | (((UInt32)(val & TUPLE_MASK)) << (3*index));
 	}
 
-	public String ToString () {
+	public String ToRepr () {
 		String result = "";
 
 		for (int i = Config.TREE_DEPTH - 1; i >= 0; i--) {

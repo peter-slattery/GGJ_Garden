@@ -16,8 +16,6 @@ public class Tile : TreeObj {
 	// NOTE: Growth levels are stored by the growthState variable and range from [0, NUM_GROWTH_LEVELS-1]
 	public static readonly int NUM_GROWTH_LEVELS		= 4;
 
-	public static readonly float TIME_UNIT_STANDARD		= 10.0f;
-
 	public static readonly ushort BLANK_INDEX	= 0;
 	public static readonly ushort TILLED_INDEX	= 1;
 	public static readonly ushort WEEDS_INDEX	= 2;
@@ -124,14 +122,15 @@ public class Tile : TreeObj {
 	// TODO: This function will need to have things added for the different plant behaviors (spread, seed, etc.)
 	public override void updateState () {
 		int prevGrowthState = this.growthState;
+		this.growthState = (int) (this.growthLevel / ((GROWTH_MAX - GROWTH_MIN) / NUM_GROWTH_LEVELS));
 
-		this.growthState = (int)((Tile.GROWTH_MAX - Tile.GROWTH_MIN) / this.growth);
-
+		Debug.Log ("Tile: " + this.addr.ToRepr () + " has growth level: " + this.growthLevel + " and growth state: " + this.growthState);
 		if (prevGrowthState != this.growthState) {
+			
 			// NOTE: This line requires that the ordering of the TileTypeController.TileVizType matches the Tile type indices at the top of this file
 			TileTypeController.TileVizType curState = (TileTypeController.TileVizType) this.typeIndex;
-			int [] dir = [0];
-			this.tileCont.UpdateTileState(curState, this.growth, dir);
+			int [] dir = { 0 };
+			//this.tileCont.UpdateTileState(curState, this.growth, dir);
 		}
 	}
 
@@ -143,8 +142,11 @@ public class Tile : TreeObj {
 	public override void setState (CanAddr cAddr, byte tileType, float growthLevel, TileTypeController tTController) {
 		this.tileType = tileType;
 		this.typeIndex = Tile.typeIndexForState (this.tileType);
-		this.growthState = growthState;
+		this.growthLevel = growthLevel;
 		this.tileCont = tTController;
+
+		this.growthState = (int)((Tile.GROWTH_MAX - Tile.GROWTH_MIN) / this.growthLevel);
+		this.fillOutRef ();
 	}
 
 	/* ******************
@@ -153,9 +155,9 @@ public class Tile : TreeObj {
 
 	Tile[] outRef	= new Tile[NUM_NEIGHBORS];
 
-	public byte		tileType	= 0x0;
+	public byte		tileType	= Tile.ROCK_MASK;
 	public ushort	typeIndex	= 0;
-	public float	growth		= 0x0;
+	public float	growthLevel	= 0x0;
 	public int		growthState	= 0;
 
 	public TileTypeController tileCont = null;
@@ -165,6 +167,8 @@ public class Tile : TreeObj {
 		this.addr = new CanAddr(prnt.Address);
 		this.aggLev = prnt.AggregateLevel - 1;
 		this.addr.setTuple((byte) nextTuple, this.aggLev);
+		this.growthState = 0;
+		this.fillOutRef ();
 	}
 
 	public bool isBlank () {
@@ -196,14 +200,27 @@ public class Tile : TreeObj {
 	}
 
 	private void updateGrowth () {
-		float timeStep = (float) GridController.getCurInstance ().updateDiff.TotalSeconds / Tile.TIME_UNIT_STANDARD;
-		this.growth += Tile.TILE_GROWTH_RATES [this.typeIndex] * timeStep;
+		float timeStep = (float) GridController.getCurInstance ().updateDiff.TotalSeconds / Config.TIME_UNIT_STANDARD;
+		this.growthLevel = Mathf.Clamp (this.growthLevel + (Tile.TILE_GROWTH_RATES [this.typeIndex] * timeStep), Tile.GROWTH_MIN, Tile.GROWTH_MAX);
 	}
 
 	private void AffectNeighbors () {
-		float timeStep = (float) GridController.getCurInstance ().updateDiff.TotalSeconds / Tile.TIME_UNIT_STANDARD;
+		float timeStep = (float) GridController.getCurInstance ().updateDiff.TotalSeconds / Config.TIME_UNIT_STANDARD;
 		for (int i = 0; i < Tile.NUM_NEIGHBORS; i++) {
-			this.outRef [i].growth += Tile.INTER_TILE_EFFECTS [this.typeIndex, this.outRef [i].typeIndex] * timeStep;
+			if (this.outRef [i] != null) {
+				this.outRef [i].growthLevel = Mathf.Clamp(this.outRef[i].growthLevel + (Tile.INTER_TILE_EFFECTS [this.typeIndex, this.outRef [i].typeIndex] * timeStep), Tile.GROWTH_MIN, Tile.GROWTH_MAX);
+			}
+		}
+	}
+
+	private void fillOutRef () {
+		// TODO: If I am Rock, Tilled, Or Outside (?) do not make outRefs
+		if ((this.tileType & (Tile.ROCK_MASK | Tile.TILL_MASK)) == 0) {
+			for (int i = 0; i < Tile.NUM_NEIGHBORS; i++) {
+				LatAddr lAdd = CanAddr.convertCanAddrToLatAddr (this.addr);
+				lAdd.addLatAddr (Tile.getNeighborLatOffset (i));
+				this.outRef [i] = GridController.getCurInstance ().getTile (CanAddr.convertLatAddrToCanAddr (lAdd));
+			}
 		}
 	}
 }
