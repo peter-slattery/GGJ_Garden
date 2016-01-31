@@ -121,12 +121,10 @@ public class InputHandler : MonoBehaviour {
         if (m_mode == InputMode.IN_INVENTORY)
         {
             m_mode = InputMode.WAITING;
-            Debug.Log("waiting");
         }
         else
         {
             m_mode = InputMode.IN_INVENTORY;
-            Debug.Log("inventory");
         }
     }
 

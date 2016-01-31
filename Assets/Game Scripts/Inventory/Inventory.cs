@@ -34,15 +34,16 @@ public class Inventory : MonoBehaviour
     {
         isOpen = true;
         this.gameObject.SetActive(true);
-        // TODO: Delete current items???
         DisplayItems();
     }
 
     public void Toggle()
     {
-        InputHandler test = FindObjectOfType(typeof (InputHandler)) as InputHandler;
+        // Prevent Player from walking when doing inventory clicks
+        InputHandler inputHandler = FindObjectOfType(typeof (InputHandler)) as InputHandler;
+        inputHandler.toggleInventory();
 
-        test.toggleInventory();
+        // Toggle visibility
         if (isOpen)
         {
             Close();
@@ -64,7 +65,7 @@ public class Inventory : MonoBehaviour
 
     void DisplayItems ()
     {
-        // TODO: maybe find a better wya to do this? idk
+        // TODO: maybe find a better way to do this? idk :(
         // Delete items currently in the container
         foreach (Transform child in itemContainer.transform)
         {
@@ -108,17 +109,14 @@ public class Inventory : MonoBehaviour
         int index = item.GetComponent<InventoryItem>().Index;
         Item currItem = itemsList[index];
 
-        // TODO: Check if there is an item already on the ground
+        // TODO: Check if there is an item already on the ground?
 
-        // Create a new item of the object type on the ground (instintate prefab)
+        // Create a new item of the object type where the player is
         GameObject dropppedItem = Instantiate(Resources.Load(currItem.PrefabName)) as GameObject;
-        //dropppedItem.transform.SetParent(Object.FindObjectOfType<CharacterController>(), false);
-
-        // Put where the character is
-
+        dropppedItem.transform.position = Object.FindObjectOfType<PlayerCharacterController>().transform.position;
+        
         // Remove item from list
         itemsList.Remove(currItem);
-        Debug.Log("count:"+ itemsList.Count);
         Destroy(item);
     }
 }
