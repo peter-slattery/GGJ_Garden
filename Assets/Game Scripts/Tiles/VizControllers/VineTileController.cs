@@ -6,29 +6,40 @@ public class VineTileController : TileVizController {
 	private GameObject m_tendrilParent;
 	private GameObject m_tendrilObject;
 
-	private int[] growthDirections;
+	private int[] growthDirections = { 0, 0, 0, 0, 0, 0 };
 
 	// Use this for initialization
 	public override void Start () {
 		base.Start ();
 
-		// Find Tendril Parent
-		for (int i = 0; i < transform.childCount; i++) {
-			GameObject child = transform.GetChild (i).gameObject;
-			if (child.name == "tendril_elements") {
-				m_tendrilParent = child;
-				break;
-			}
-		}
-		m_tendrilObject = m_tendrilParent.transform.GetChild (0).gameObject;
-		m_tendrilObject.SetActive (false);
-
-		growthDirections = new int[6];
+		InitializeVineViz ();
 	}
-	
+
+	void Awake () {
+
+	}
+
 	// Update is called once per frame
 	void Update () {
 	
+	}
+
+	public void InitializeVineViz () {
+		// Find Tendril Parent
+		if (m_tendrilObject == null) {
+			for (int i = 0; i < transform.childCount; i++) {
+				GameObject child = transform.GetChild (i).gameObject;
+				if (child.name == "tendril_elements") {
+					m_tendrilParent = child;
+					break;
+				}
+			}
+		}
+
+		if (m_tendrilObject == null) {
+			m_tendrilObject = m_tendrilParent.transform.GetChild (0).gameObject;
+			m_tendrilObject.SetActive (false);
+		}
 	}
 
 	public void SetGrowthDirections(int[] directions){
@@ -37,6 +48,9 @@ public class VineTileController : TileVizController {
 		}
 
 		for (int i = 0; i < directions.Length && i < 6; i++) {
+			if (directions [i] == 0) {
+				continue;
+			}
 			growthDirections [i] = directions [i];
 			CreateTendrilToPosition (growthDirections [i]);
 		}
@@ -64,6 +78,17 @@ public class VineTileController : TileVizController {
 		case 6:
 			rot = 90;
 			break;
+		}
+
+		if (m_tendrilObject == null || m_tendrilParent == null) {
+			InitializeVineViz ();	
+		}
+
+		if (m_tendrilObject == null) {
+			Debug.Log ("Object missing");
+		} 
+		if (m_tendrilParent == null) {
+			Debug.Log ("Parent Missing");
 		}
 
 		GameObject newTendril = Instantiate (m_tendrilObject, m_tendrilParent.transform.position, m_tendrilObject.transform.rotation) as GameObject;

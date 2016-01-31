@@ -9,9 +9,13 @@ public class PlayerCharacterController : MonoBehaviour {
 	InputHandler m_input;
 	Vector3 m_lastTarget;
 
+	Animator m_anim;
+
 	// Use this for initialization
 	void Start () {
 		m_input = FindObjectOfType (typeof(InputHandler)) as InputHandler;
+
+		m_anim = transform.GetChild(0).GetComponent<Animator> ();
 	}
 	
 	// Update is called once per frame
@@ -40,16 +44,47 @@ public class PlayerCharacterController : MonoBehaviour {
 	}
 
 	IEnumerator FindPathToTarget(Vector3 target){
-		float distance_epsilon = 1;
+		float distance_epsilon = .3f;
 
 		Vector3 targetCorrected = target;
 		targetCorrected.y = transform.position.y;
 
 		while (Vector3.Distance (transform.position, targetCorrected) > distance_epsilon) {
 			Vector3 toTarget = (targetCorrected - transform.position).normalized;
-			transform.Translate (toTarget * m_speed * Time.deltaTime);
-			yield return null;
+
+			int dir = 0;
+
+			// If Going Up
+			if (toTarget.z > 0) {
+				
+
+			} else {
+
+			}
+
+			Vector3 nextFrame = toTarget * m_speed * Time.deltaTime;
+			Vector2 onPlane = new Vector2 (nextFrame.x, nextFrame.z);
+
+			Tile nextTile = GridController.getCurInstance ().getTile (GridController.WorldToGrid (onPlane));
+
+			//Debug.Log (nextTile.tileType);
+
+			if (nextTile.tileType == TileTypeController.TileType.TILE_BLANK ||
+			    nextTile.tileType == TileTypeController.TileType.TILE_FLOWERS ||
+			    nextTile.tileType == TileTypeController.TileType.TILE_TILLED) {
+
+				transform.Translate (toTarget * m_speed * Time.deltaTime);
+
+				m_anim.SetInteger ("state", dir);
+				m_anim.SetBool ("moving", true);
+
+				yield return null;
+			} else {
+				break;
+			}
 		}
+
+		m_anim.SetBool ("moving", false);
     }
 
     void OnMouseDown()

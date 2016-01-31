@@ -21,6 +21,11 @@ public class FlowersVizController : TileVizController {
 		InitializeFlowerBuds ();
 	}
 
+	void Awake() {
+		base.Start ();
+		InitializeFlowerBuds ();
+	}
+
 	void InitializeFlowerBuds (){
 		flowerBuds = new GameObject[m_verticalElements.transform.childCount];
 		flowers = new GameObject[m_verticalElements.transform.childCount];

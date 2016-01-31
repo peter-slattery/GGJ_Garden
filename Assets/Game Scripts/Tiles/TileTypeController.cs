@@ -21,6 +21,7 @@ public class TileTypeController : MonoBehaviour {
     public TileType m_tileType = TileType.TILE_BLANK;
 	public float m_tileGrowth = 0.0f;
 
+	private GameObject m_tileVizPrefab;
 	private TileVizController m_vizController;
 
 	// Use this for initialization
@@ -47,6 +48,9 @@ public class TileTypeController : MonoBehaviour {
 
 		if (m_vizController == null) {
 			m_vizController = transform.GetChild (0).GetComponent<TileVizController> ();
+			if (m_tileType == TileType.TILE_VINE) {
+				(m_vizController as VineTileController).InitializeVineViz ();
+			}
 		}
 
 		if (newGrowth != m_tileGrowth) {
@@ -84,29 +88,9 @@ public class TileTypeController : MonoBehaviour {
 			return;
 		}
 
-		GameObject prefab = Instantiate (m_tileSingle.GetPrefabOfType (m_tileType), transform.position, Quaternion.identity) as GameObject;
-		prefab.transform.parent = gameObject.transform;
-
-		switch (m_tileType) {
-		case TileType.TILE_BLANK:
-			break;
-		case TileType.TILE_FLOWERS:
-			break;
-		case TileType.TILE_ROCK:
-			break;
-		case TileType.TILE_TILLED:
-			break;
-		case TileType.TILE_TREE:
-			break;
-		case TileType.TILE_VINE:
-			m_vizController = prefab.AddComponent<VineTileController> () as VineTileController;
-			break;
-		case TileType.TILE_WEEDS:
-			
-			break;
-		default:	// TILE_BLANK
-			break;
-		}
+		m_tileVizPrefab = Instantiate (m_tileSingle.GetPrefabOfType (m_tileType), transform.position, Quaternion.identity) as GameObject;
+		m_tileVizPrefab.transform.parent = gameObject.transform;
+		m_vizController = m_tileVizPrefab.GetComponent<TileVizController> ();
 	}
 
 	void EraseDefaultViz() {
