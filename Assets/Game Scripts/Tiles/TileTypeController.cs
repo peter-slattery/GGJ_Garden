@@ -41,6 +41,7 @@ public class TileTypeController : MonoBehaviour {
 
 	public void UpdateTileState(TileType newType, float newGrowth, int[] direction ){
 		if (newType != m_tileType) {
+			m_tileType = newType;
 			CreateVisualizationForType ();
 		}
 
