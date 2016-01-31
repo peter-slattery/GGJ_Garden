@@ -26,7 +26,10 @@ public class SpaceGrid {
 		lastUpdate = curUpdate;
 		curUpdate = System.DateTime.UtcNow;
 		updateDiff = curUpdate - lastUpdate;
-		rootNode.updateProperties();
+		int numUpdates = (int) (updateDiff.TotalSeconds/Config.TIME_UNIT_STANDARD);
+		for (int i = 0; i < numUpdates; i++) {
+			rootNode.updateProperties ();
+		}
 	}
 	
 	public void setState (CanAddr cAddr, TileTypeController.TileType tileType, float growthLevel) {

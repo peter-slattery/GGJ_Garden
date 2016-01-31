@@ -50,7 +50,7 @@ public class GridController : MonoBehaviour {
 			GridController.getCurInstance ().setState (tmp, (TileTypeController.TileType)tiles [i], Random.Range (0f, (Tile.GROWTH_MAX / 3)));
 			Vector2 worldVec = GridController.GridToWorld (tmp);
 		}
-		GridController.CreateVizForCurGrid ();
+		//GridController.CreateVizForCurGrid ();
 	}
 
 	public static void CreateVizForCurGrid () {

@@ -188,15 +188,13 @@ public class Tile : TreeObj {
 	}
 
 	private void updateGrowth () {
-		float timeStep = (float) GridController.getCurInstance ().updateDiff.TotalSeconds / Config.TIME_UNIT_STANDARD;
-		this.growthLevel = Mathf.Clamp (this.growthLevel + (Tile.TILE_GROWTH_RATES [(int) this.tileType] * timeStep), Tile.GROWTH_MIN, Tile.GROWTH_MAX);
+		this.growthLevel = Mathf.Clamp (this.growthLevel + (Tile.TILE_GROWTH_RATES [(int) this.tileType]), Tile.GROWTH_MIN, Tile.GROWTH_MAX);
 	}
 
 	private void AffectNeighbors () {
-		float timeStep = (float) GridController.getCurInstance ().updateDiff.TotalSeconds / Config.TIME_UNIT_STANDARD;
 		for (int i = 0; i < Tile.NUM_NEIGHBORS; i++) {
 			if (this.outRef [i] != null) {
-				this.outRef [i].growthLevel = Mathf.Clamp(this.outRef[i].growthLevel + (Tile.INTER_TILE_EFFECTS [(int) this.tileType, (int) this.outRef [i].tileType] * timeStep), Tile.GROWTH_MIN, Tile.GROWTH_MAX);
+				this.outRef [i].growthLevel = Mathf.Clamp(this.outRef[i].growthLevel + (Tile.INTER_TILE_EFFECTS [(int) this.tileType, (int) this.outRef [i].tileType]), Tile.GROWTH_MIN, Tile.GROWTH_MAX);
 			}
 		}
 	}
