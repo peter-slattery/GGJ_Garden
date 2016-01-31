@@ -9,13 +9,10 @@ public enum ItemType
 }
 
 public class Item : MonoBehaviour {
-
-    public string Name;
+    
+    public string PrefabName;
     public string Description;
     public Sprite ItemIcon;
-    public GameObject ItemModel;
-    //public int Count;
-    //public ItemType Type;
     
     void Start ()
     {
@@ -29,7 +26,14 @@ public class Item : MonoBehaviour {
     
     void OnMouseDown()
     {
-        Inventory._instance.AddItem(this.gameObject);
-        Destroy(this.gameObject);
+        if (Inventory._instance.AddItem(this.gameObject))
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            // Too many items in bag
+            // TODO: play sound?
+        }
     }
 }
