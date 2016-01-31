@@ -54,13 +54,8 @@ public class PlayerCharacterController : MonoBehaviour {
 
 			int dir = 0;
 
-			// If Going Up
-			if (toTarget.z > 0) {
-				
-
-			} else {
-
-			}
+			// If Going Upa
+			//Debug.Log(Quaternion.FromToRotation(Vector3.right, toTarget).eulerAngles);
 
 			Vector3 nextFrame = toTarget * m_speed * Time.deltaTime;
 			Vector2 onPlane = new Vector2 (nextFrame.x, nextFrame.z);
@@ -75,8 +70,8 @@ public class PlayerCharacterController : MonoBehaviour {
 
 				transform.Translate (toTarget * m_speed * Time.deltaTime);
 
-				m_anim.SetInteger ("state", dir);
-				m_anim.SetBool ("moving", true);
+				m_anim.SetInteger ("State", dir);
+				m_anim.SetBool ("Moving", true);
 
 				yield return null;
 			} else {

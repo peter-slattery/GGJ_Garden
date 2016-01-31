@@ -16,6 +16,8 @@ public class TileTypeController : MonoBehaviour {
 		TILE_RANDOM,
     };
 
+	private bool m_initialized = false;
+
 	private TileSingleton m_tileSingle;
 
     public TileType m_tileType = TileType.TILE_BLANK;
@@ -26,18 +28,26 @@ public class TileTypeController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		CreateVisualizationForType ();
-
-		// RegisterTile( 2D position, Tile (byte) type, float Growth Level, TileVizController this)
-		Vector2 pos = new Vector2(transform.position.x, transform.position.z);
-
-		GridController.getCurInstance ().RegisterTile (pos, m_tileType, m_tileGrowth, this);
+		InitializeTileController ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		int[] test = { 0 };
 		UpdateTileState (m_tileType, m_tileGrowth, test);
+	}
+
+	public void InitializeTileController() {
+		if (!m_initialized) {
+			CreateVisualizationForType ();
+
+			// RegisterTile( 2D position, Tile (byte) type, float Growth Level, TileVizController this)
+			Vector2 pos = new Vector2(transform.position.x, transform.position.z);
+
+			GridController.getCurInstance ().RegisterTile (pos, m_tileType, m_tileGrowth, this);
+
+			m_initialized = true;
+		}
 	}
 
 	public void UpdateTileState(TileType newType, float newGrowth, int[] direction ){
