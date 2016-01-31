@@ -42,7 +42,9 @@ public class SpaceGrid {
 
 	public List<Tile> QueryForTileType (TileTypeController.TileType tileType) {
 		List<Tile> result = new List<Tile> ();
-		rootNode.QueryForTileType (result, tileType);
+		if (rootNode != null) {
+			rootNode.QueryForTileType (result, tileType);
+		}
 		return result;
 	}
 }
