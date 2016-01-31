@@ -73,6 +73,10 @@ public class Tile : TreeObj {
 		}
 	}
 
+	public static int getGrowthStateForLevel (float growthLevel) {
+		return (int) (growthLevel / ((GROWTH_MAX - GROWTH_MIN) / NUM_GROWTH_LEVELS));
+	}
+
 	/* ******************
 	 * 	TREEOBJ MEMBERS
 	 * ******************/
@@ -84,7 +88,7 @@ public class Tile : TreeObj {
 	// TODO: This function will need to have things added for the different plant behaviors (spread, seed, etc.)
 	public override void updateState () {
 		int prevGrowthState = this.growthState;
-		this.growthState = (int) (this.growthLevel / ((GROWTH_MAX - GROWTH_MIN) / NUM_GROWTH_LEVELS));
+		this.growthState = Tile.getGrowthStateForLevel (this.growthLevel);
 
 		Debug.Log ("Tile: " + this.addr.ToRepr () + " has growth level: " + this.growthLevel + " and growth state: " + this.growthState);
 		if (prevGrowthState != this.growthState) {

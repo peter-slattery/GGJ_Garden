@@ -35,6 +35,6 @@ public class SpaceGrid {
 	}
 
 	public void RegisterTile (Vector2 worldPos, TileTypeController.TileType tileType, float growthLevel, TileTypeController tileController) {
-		// TODO: convert worldPos to CanAddr and call setState
+		this.setState (GridController.WorldToGrid (worldPos), tileType, growthLevel, tileController);
 	}
 }
