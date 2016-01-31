@@ -14,7 +14,7 @@ public class TileSingleton : MonoBehaviour {
 	
 	}
 	
-	public GameObject GetPrefabOfType(TileTypeController.TileVizType type)
+	public GameObject GetPrefabOfType(TileTypeController.TileType type)
     {
         if (m_tilePrefabs == null || m_tilePrefabs.Count == 0)
         {

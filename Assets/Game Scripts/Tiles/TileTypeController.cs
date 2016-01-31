@@ -3,7 +3,7 @@ using System.Collections;
 
 public class TileTypeController : MonoBehaviour {
 
-    public enum TileVizType
+    public enum TileType
     {
         TILE_BLANK,
         TILE_TILLED,
@@ -18,7 +18,7 @@ public class TileTypeController : MonoBehaviour {
 
 	private TileSingleton m_tileSingle;
 
-    public TileVizType m_tileType = TileVizType.TILE_BLANK;
+    public TileType m_tileType = TileType.TILE_BLANK;
 	public float m_tileGrowth = 0.0f;
 
 	private TileVizController m_typeController;
@@ -28,7 +28,9 @@ public class TileTypeController : MonoBehaviour {
 		CreateVisualizationForType ();
 
 		// RegisterTile( 2D position, Tile (byte) type, float Growth Level, TileVizController this)
-		// GridController.getCurInstance().RegisterTile();
+		Vector2 pos = new Vector2(transform.position.x, transform.position.z);
+
+		GridController.getCurInstance ().RegisterTile (pos, m_tileType, m_tileGrowth, this);
 	}
 	
 	// Update is called once per frame
@@ -36,7 +38,7 @@ public class TileTypeController : MonoBehaviour {
 
 	}
 
-	public void UpdateTileState(TileVizType newType, float newGrowth, int[] direction ){
+	public void UpdateTileState(TileType newType, float newGrowth, int[] direction ){
 		if (newType != m_tileType) {
 			// Delete Child Prefab
 			// Instantiate Corret Child Prefab
@@ -46,7 +48,7 @@ public class TileTypeController : MonoBehaviour {
 			// Update the Visualization To Reflect New Growth
 		}
 
-		if (m_tileType == TileVizType.TILE_VINE && direction[0] != 0) {
+		if (m_tileType == TileType.TILE_VINE && direction[0] != 0) {
 			VineTileController vineTC = m_typeController as VineTileController;
 			vineTC.SetGrowthDirections (direction);
 		}
@@ -69,8 +71,8 @@ public class TileTypeController : MonoBehaviour {
 			m_tileSingle = FindObjectOfType (typeof(TileSingleton)) as TileSingleton;
 		}
 
-		if (m_tileType == TileVizType.TILE_RANDOM) {
-			m_tileType = (TileVizType)Random.Range (0, 6);
+		if (m_tileType == TileType.TILE_RANDOM) {
+			m_tileType = (TileType)Random.Range (0, 6);
 			CreateVisualizationForType ();
 			return;
 		}
@@ -79,20 +81,20 @@ public class TileTypeController : MonoBehaviour {
 		prefab.transform.parent = gameObject.transform;
 
 		switch (m_tileType) {
-		case TileVizType.TILE_BLANK:
+		case TileType.TILE_BLANK:
 			break;
-		case TileVizType.TILE_FLOWERS:
+		case TileType.TILE_FLOWERS:
 			break;
-		case TileVizType.TILE_ROCK:
+		case TileType.TILE_ROCK:
 			break;
-		case TileVizType.TILE_TILLED:
+		case TileType.TILE_TILLED:
 			break;
-		case TileVizType.TILE_TREE:
+		case TileType.TILE_TREE:
 			break;
-		case TileVizType.TILE_VINE:
+		case TileType.TILE_VINE:
 			m_typeController = prefab.AddComponent<VineTileController> () as VineTileController;
 			break;
-		case TileVizType.TILE_WEEDS:
+		case TileType.TILE_WEEDS:
 			
 			break;
 		default:	// TILE_BLANK

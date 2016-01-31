@@ -40,6 +40,9 @@ public class Inventory : MonoBehaviour
 
     public void Toggle()
     {
+        InputHandler test = FindObjectOfType(typeof (InputHandler)) as InputHandler;
+
+        test.toggleInventory();
         if (isOpen)
         {
             Close();
@@ -108,9 +111,11 @@ public class Inventory : MonoBehaviour
         // TODO: Check if there is an item already on the ground
 
         // Create a new item of the object type on the ground (instintate prefab)
-        Instantiate(Resources.Load(currItem.PrefabName));
-        // TODO: put where the character is
-        
+        GameObject dropppedItem = Instantiate(Resources.Load(currItem.PrefabName)) as GameObject;
+        //dropppedItem.transform.SetParent(Object.FindObjectOfType<CharacterController>(), false);
+
+        // Put where the character is
+
         // Remove item from list
         itemsList.Remove(currItem);
         Debug.Log("count:"+ itemsList.Count);
