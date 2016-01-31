@@ -49,14 +49,27 @@ public class PlayerCharacterController : MonoBehaviour {
 		Vector3 targetCorrected = target;
 		targetCorrected.y = transform.position.y;
 
+		Vector3 toTarget = (targetCorrected - transform.position).normalized;
+
+		int dir = 0;
+
+		float angle = Quaternion.FromToRotation (Vector3.right, toTarget).eulerAngles.y;
+
+		if (angle <= 85 || angle > 320) {
+			dir = 1;
+		} else if (angle > 80 && angle <= 165) {
+			dir = 3;
+		} else if (angle > 165 && angle <= 271) {
+			dir = 4;
+		} else {
+			dir = 2;
+		}
+
+		m_anim.SetInteger ("State", dir);
+		m_anim.SetBool ("Moving", true);
+
 		while (Vector3.Distance (transform.position, targetCorrected) > distance_epsilon) {
-			Vector3 toTarget = (targetCorrected - transform.position).normalized;
-
-			int dir = 0;
-
-			// If Going Upa
-			//Debug.Log(Quaternion.FromToRotation(Vector3.right, toTarget).eulerAngles);
-
+			
 			Vector3 nextFrame = toTarget * m_speed * Time.deltaTime;
 			Vector2 onPlane = new Vector2 (nextFrame.x, nextFrame.z);
 
@@ -70,16 +83,13 @@ public class PlayerCharacterController : MonoBehaviour {
 
 				transform.Translate (toTarget * m_speed * Time.deltaTime);
 
-				m_anim.SetInteger ("State", dir);
-				m_anim.SetBool ("Moving", true);
-
 				yield return null;
 			} else {
 				break;
 			}
 		}
 
-		m_anim.SetBool ("moving", false);
+		m_anim.SetBool ("Moving", false);
     }
 
     void OnMouseDown()
