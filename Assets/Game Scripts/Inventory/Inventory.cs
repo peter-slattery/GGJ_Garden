@@ -111,29 +111,54 @@ public class Inventory : MonoBehaviour
             return false;
         }        
     }
-
+    
     public void UseItem(int index)
     {
         Item currItem = itemsList[index];
         ItemType itemType = currItem.m_ItemType;
         GameObject currGameObject = GameObject.Find("EventSystem").GetComponent<EventSystem>().currentSelectedGameObject;
 
+        Vector3 playerPos = Object.FindObjectOfType<PlayerCharacterController>().transform.position;
+        Tile tileStandingOn = GridController.getCurInstance().getTile(GridController.WorldToGrid(playerPos));
+
         Debug.Log(itemType);
 
         switch (itemType)
         {
             case ItemType.Seed:
-                Debug.Log("Plant a Seed");
-                RemoveItem(index, currGameObject);
+                Debug.Log("Plant a Seed"+ tileStandingOn.tileType);
+                if (tileStandingOn.isTilled())
+                {
+                    Debug.Log("Setting tile to: " + currItem.m_TileType);
+                    tileStandingOn.setState(null, currItem.m_TileType, 0f);
+                    RemoveItem(index, currGameObject);
+                }
+                else
+                {
+                    // TODO: play nope noise?
+                }
                 break;
             case ItemType.Tool:
                 Debug.Log("Do a tool thing");
+                tileStandingOn.setState(null, currItem.m_TileType, 0f);
+                Debug.Log("Setting tile to: " + currItem.m_TileType);
                 break;
             case ItemType.Normal:
                 break;
             default:
                 break;
         }
+    }
+
+
+    void RemoveItem(int index, GameObject physicalRepresentation)
+    {
+        // TODO: Optimize this....The lists change index when you delete things, and we need the index to be correct to delete items. For now, I'm setting a bool to null and keeping the removed item in the list, but there's got to be a better way.
+        // "Remove" item from list
+        Item currItem = itemsList[index];
+        currItem.isRemovedFromInventory = true;
+        // Destroy sprite
+        Destroy(physicalRepresentation);
     }
 
     public void DropItem(GameObject item)
@@ -148,16 +173,6 @@ public class Inventory : MonoBehaviour
         dropppedItem.transform.position = Object.FindObjectOfType<PlayerCharacterController>().transform.position;
 
         RemoveItem(index, item);
-    }
-
-    void RemoveItem(int index, GameObject physicalRepresentation)
-    {
-        // TODO: Optimize this....The lists change index when you delete things, and we need the index to be correct to delete items. For now, I'm setting a bool to null and keeping the removed item in the list, but there's got to be a better way.
-        // "Remove" item from list
-        Item currItem = itemsList[index];
-        currItem.isRemovedFromInventory = true;
-        // Destroy sprite
-        Destroy(physicalRepresentation);
     }
 
 }
