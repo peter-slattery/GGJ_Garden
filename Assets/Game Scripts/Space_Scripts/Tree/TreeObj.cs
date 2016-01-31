@@ -32,4 +32,5 @@ public abstract class TreeObj {
 	public abstract void RegisterController (CanAddr cAddr, TileTypeController tTCont);
 
 	public abstract void QueryForTileType (List<Tile> workingList, TileTypeController.TileType tileType);
+	public abstract void CreateVizForTile (TileSingleton tS);
 }

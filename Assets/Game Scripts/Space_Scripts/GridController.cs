@@ -43,4 +43,17 @@ public class GridController : MonoBehaviour {
 		CanAddr result = CanAddr.convertLatAddrToCanAddr (LatAddr.convertVectorToLatAddr(vec));
 		return result;
 	}
+
+	public static void CreateGrid (int[] tiles, int arrayWidth) {
+		for (int i = 0; i < tiles.Length; i++) {
+			CanAddr tmp = CanAddr.convertLatAddrToCanAddr(new LatAddr ((i % arrayWidth), ((int) i / arrayWidth), 0));
+			GridController.getCurInstance ().setState (tmp, (TileTypeController.TileType)tiles [i], Random.Range (0f, (Tile.GROWTH_MAX / 3)));
+			Vector2 worldVec = GridController.GridToWorld (tmp);
+		}
+		GridController.CreateVizForCurGrid ();
+	}
+
+	public static void CreateVizForCurGrid () {
+		getCurInstance ().rootNode.CreateVizForTile (GameObject.FindObjectOfType<TileSingleton>() as TileSingleton);
+	}
 }

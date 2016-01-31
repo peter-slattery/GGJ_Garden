@@ -82,10 +82,7 @@ public class Tile : TreeObj {
 				this.specialAction ();
 			}
 				
-			if (this.tileCont != null) {
-				int [] dir = { 0 };
-				this.tileCont.UpdateTileState(this.tileType, this.growthLevel, dir);
-			}
+			this.UpdateTileViz ();
 		}
 	}
 
@@ -111,13 +108,7 @@ public class Tile : TreeObj {
 		this.growthState = Tile.getGrowthStateForLevel (this.growthLevel);
 		this.fillOutRef ();
 
-		if (this.tileCont != null) {
-			if (this.tileType == TileTypeController.TileType.TILE_VINE) {
-				this.tileCont.UpdateTileState(this.tileType, this.growthLevel, this.presentVine.dirs);
-			}
-			int[] dir = { 0 };
-			this.tileCont.UpdateTileState(this.tileType, this.growthLevel, dir);
-		}
+		this.UpdateTileViz ();
 	}
 
 	public override void RegisterController (CanAddr cAddr, TileTypeController tTCont) {
@@ -127,6 +118,18 @@ public class Tile : TreeObj {
 	public override void QueryForTileType (List<Tile> workingList, TileTypeController.TileType tileType) {
 		if (this.tileType == tileType) {
 			workingList.Add (this);
+		}
+	}
+
+	public override void CreateVizForTile (TileSingleton tS) {
+		Vector2 worldVec = GridController.GridToWorld (this.addr);
+		TileTypeController newTile = (GameObject.Instantiate (tS.m_tileParent, new Vector3 (worldVec.x, 0, worldVec.y), Quaternion.identity) as GameObject).GetComponent<TileTypeController>() as TileTypeController;
+
+		if (this.presentVine != null) {
+			newTile.UpdateTileState (this.tileType, this.growthLevel, this.presentVine.dirs);
+		} else {
+			int[] dirs = { 0 };
+			newTile.UpdateTileState (this.tileType, this.growthLevel, dirs);
 		}
 	}
 
@@ -278,7 +281,7 @@ public class Tile : TreeObj {
 		}
 		bool hasNew = false;
 		while (!hasNew) {
-			int candidateNeighborIndex = Random.Range (0, validNeighbors.Count);
+			int candidateNeighborIndex = Random.Range (0, validNeighbors.Count-1);
 			if (validNeighbors [candidateNeighborIndex].tileType == TileTypeController.TileType.TILE_FLOWERS ||
 				validNeighbors [candidateNeighborIndex].tileType == TileTypeController.TileType.TILE_TREE) {
 				if (validNeighbors [candidateNeighborIndex].growthLevel < (GROWTH_MAX / 2f)) {
@@ -310,7 +313,18 @@ public class Tile : TreeObj {
 
 		tileToGrow.presentVine.dirs [tileToGrow.presentVine.curDirs++] = (int) CanAddr.TUPLE_MASK & ~(disp.getTuple(0));
 
-		this.tileCont.UpdateTileState (this.tileType, this.growthLevel, this.presentVine.dirs);
-		tileToGrow.tileCont.UpdateTileState (tileToGrow.tileType, tileToGrow.growthLevel, tileToGrow.presentVine.dirs);
+		this.UpdateTileViz ();
+		tileToGrow.UpdateTileViz ();
+	}
+
+	public void UpdateTileViz () {
+		if (this.tileCont != null) {
+			if (this.presentVine != null) {
+				this.tileCont.UpdateTileState (this.tileType, this.growthLevel, this.presentVine.dirs);
+			} else {
+				int[] dirs = { 0 };
+				this.tileCont.UpdateTileState (this.tileType, this.growthLevel, dirs);
+			}
+		}
 	}
 }

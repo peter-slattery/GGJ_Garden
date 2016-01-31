@@ -86,6 +86,14 @@ public class Node : TreeObj {
 		}
 	}
 
+	public override void CreateVizForTile (TileSingleton tS) {
+		for (int i = 0; i < Node.NUM_CHILDREN; i++) {
+			if (this.children [i] != null) {
+				this.children [i].CreateVizForTile (tS);
+			}
+		}
+	}
+
 	/* ******************
 	 * 	NODE SPECIFIC
 	 * ******************/
