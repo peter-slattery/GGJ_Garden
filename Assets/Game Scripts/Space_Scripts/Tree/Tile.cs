@@ -134,6 +134,8 @@ public class Tile : TreeObj {
 		this.addr = new CanAddr(prnt.Address);
 		this.aggLev = prnt.AggregateLevel - 1;
 		this.addr.setTuple((byte) nextTuple, this.aggLev);
+
+		this.typeIndex = TileTypeController.TileType.TILE_ROCK;
 		this.growthState = 0;
 		this.fillOutRef ();
 	}
@@ -182,7 +184,7 @@ public class Tile : TreeObj {
 
 	private void fillOutRef () {
 		// TODO: If I am Rock, Tilled, Or Outside (?) do not make outRefs
-		if (this.typeIndex == TileTypeController.TileType.TILE_ROCK || this.typeIndex == TileTypeController.TileType.TILE_TILLED) {
+		if (this.typeIndex != TileTypeController.TileType.TILE_ROCK && this.typeIndex != TileTypeController.TileType.TILE_TILLED) {
 			for (int i = 0; i < Tile.NUM_NEIGHBORS; i++) {
 				LatAddr lAdd = CanAddr.convertCanAddrToLatAddr (this.addr);
 				lAdd.addLatAddr (Tile.getNeighborLatOffset (i));

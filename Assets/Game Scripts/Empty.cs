@@ -9,7 +9,9 @@ public class Empty : MonoBehaviour {
 	}
 
 	void Update () {
-		
+		if (Input.GetKeyDown (KeyCode.Space)) {
+			GridController.getCurInstance ().getTile (new CanAddr());
+		}
 	}
 	
 	void OnApplicationQuit() {
