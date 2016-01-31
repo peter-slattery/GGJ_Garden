@@ -26,7 +26,7 @@ public abstract class TreeObj {
 	public abstract Tile getTile (CanAddr cAddr);
 
 	public abstract void updateState ();
-	public abstract void updateProperties ();
+	public abstract void updateProperties (CanAddr cAddr);
 
 	public abstract void setState (CanAddr cAddr, TileTypeController.TileType tileType, float growthLevel);
 	public abstract void RegisterController (CanAddr cAddr, TileTypeController tTCont);

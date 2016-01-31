@@ -23,12 +23,18 @@ public class SpaceGrid {
 	
 	public void updateProperties () {
 		if (rootNode == null) { rootNode = new Node(); }
+
 		lastUpdate = curUpdate;
 		curUpdate = System.DateTime.UtcNow;
 		updateDiff = curUpdate - lastUpdate;
 		int numUpdates = (int) (updateDiff.TotalSeconds/Config.TIME_UNIT_STANDARD);
 		for (int i = 0; i < numUpdates; i++) {
-			rootNode.updateProperties ();
+			int numTiles = 1;
+			for (int j = 0; j < numTiles; j++) {
+				int TileToUpdate = Random.Range (0, MapArray.mapIntArray.Length);
+				CanAddr cAddr = CanAddr.convertLatAddrToCanAddr (new LatAddr ((i % MapArray.mapWidth), ((int)i / MapArray.mapWidth), 0));
+				rootNode.updateProperties (cAddr);
+			}
 		}
 	}
 	

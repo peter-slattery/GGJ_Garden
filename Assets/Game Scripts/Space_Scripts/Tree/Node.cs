@@ -34,11 +34,11 @@ public class Node : TreeObj {
 		}
 	}
 
-	public override void updateProperties () {
-		for (int i = 0; i < NUM_CHILDREN; i++) {
-			if (children[i] != null) { 
-				children[i].updateProperties();
-			}
+	public override void updateProperties (CanAddr cAddr) {
+		int childIndex = (int) cAddr.getTuple(this.aggLev - 1);
+
+		if (this.children [childIndex] != null) {
+			this.children [childIndex].updateProperties (cAddr);
 		}
 	}
 

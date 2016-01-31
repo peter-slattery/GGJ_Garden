@@ -76,6 +76,9 @@ public class Tile : TreeObj {
 	}
 
 	public override void updateState () {
+		if (!this.isActiveType) {
+			return;
+		}
 		int prevGrowthState = this.growthState;
 		this.growthState = Tile.getGrowthStateForLevel (this.growthLevel);
 
@@ -88,12 +91,25 @@ public class Tile : TreeObj {
 		}
 	}
 
-	public override void updateProperties () {
+	public override void updateProperties (CanAddr cAddr) {
+		if (!this.isActiveType) {
+			return;
+		}
 		this.updateGrowth ();
 		this.AffectNeighbors ();
 	}
 
 	public override void setState (CanAddr cAddr, TileTypeController.TileType tileType, float growthLevel) {
+		if (this.tileType == TileTypeController.TileType.TILE_BLANK ||
+		    this.tileType == TileTypeController.TileType.TILE_FLOWERS	||
+		    this.tileType == TileTypeController.TileType.TILE_WEEDS ||
+		    this.tileType == TileTypeController.TileType.TILE_VINE ||
+		    this.tileType == TileTypeController.TileType.TILE_TREE) { 
+			this.isActiveType = true;
+		} else {
+			this.isActiveType = false;
+		}
+
 		if (tileType != TileTypeController.TileType.TILE_VINE && this.tileType == TileTypeController.TileType.TILE_VINE) {
 			this.tileType = tileType;
 			this.presentVine.killChildren();
@@ -139,6 +155,7 @@ public class Tile : TreeObj {
 	public TileTypeController.TileType	tileType	= TileTypeController.TileType.TILE_ROCK;
 	public float						growthLevel	= 0x0;
 	public int							growthState	= 0;
+	public bool 						isActiveType 	= false;
 
 	public TileTypeController tileCont = null;
 
@@ -201,12 +218,13 @@ public class Tile : TreeObj {
 
 	private void fillOutRef () {
 		// TODO: If I am Rock, Tilled, Or Outside (?) do not make outRefs
-		if (this.tileType != TileTypeController.TileType.TILE_ROCK && this.tileType != TileTypeController.TileType.TILE_TILLED) {
-			for (int i = 0; i < Tile.NUM_NEIGHBORS; i++) {
-				LatAddr lAdd = CanAddr.convertCanAddrToLatAddr (this.addr);
-				lAdd.addLatAddr (Tile.getNeighborLatOffset (i));
-				this.outRef [i] = GridController.getCurInstance ().getTile (CanAddr.convertLatAddrToCanAddr (lAdd));
-			}
+		if (!this.isActiveType) {
+			return;
+		}
+		for (int i = 0; i < Tile.NUM_NEIGHBORS; i++) {
+			LatAddr lAdd = CanAddr.convertCanAddrToLatAddr (this.addr);
+			lAdd.addLatAddr (Tile.getNeighborLatOffset (i));
+			this.outRef [i] = GridController.getCurInstance ().getTile (CanAddr.convertLatAddrToCanAddr (lAdd));
 		}
 	}
 
