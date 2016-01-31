@@ -47,7 +47,7 @@ public class TileVizController : MonoBehaviour {
 		}
 	}
 
-	public void SetGrowthState (float state) {
+	public virtual void UpdateViz(float growth){
 
 	}
 }

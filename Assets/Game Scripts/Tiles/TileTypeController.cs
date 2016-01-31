@@ -35,19 +35,23 @@ public class TileTypeController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-
+		int[] test = { 0 };
+		UpdateTileState (m_tileType, m_tileGrowth, test);
 	}
 
 	public void UpdateTileState(TileType newType, float newGrowth, int[] direction ){
 		if (newType != m_tileType) {
-			// Delete Child Prefab
-			// Instantiate Corret Child Prefab
+			CreateVisualizationForType ();
 		}
 
-		if (newGrowth != m_tileGrowth) {
+		if (m_vizController == null) {
+			m_vizController = transform.GetChild (0).GetComponent<TileVizController> ();
+		}
+
+		if (true || newGrowth != m_tileGrowth) {
 			// Update the Visualization To Reflect New Growth
 			m_tileGrowth = newGrowth;
-
+			m_vizController.UpdateViz (newGrowth);
 		}
 
 		if (m_tileType == TileType.TILE_VINE && direction[0] != 0) {
