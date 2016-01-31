@@ -3,7 +3,7 @@ using System.Collections;
 
 public class InputHandler : MonoBehaviour {
 
-	public enum InputMode { WAITING, INTERACT_WORLD, PAN_CAMERA, };
+	public enum InputMode { WAITING, INTERACT_WORLD, PAN_CAMERA, IN_INVENTORY };
 	public enum PressState { NO_PRESS, FIRST_FRAME_DOWN, HELD_DOWN, FIRST_FRAME_NO_PRESS, };
 
 	public float m_minPanSpeed = .005f;
@@ -25,6 +25,10 @@ public class InputHandler : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        if (m_mode == InputMode.IN_INVENTORY)
+        {
+            return;
+        }
 		if (Input.GetMouseButtonDown (0)) {
 			m_pressState = PressState.FIRST_FRAME_DOWN;
 
@@ -111,6 +115,20 @@ public class InputHandler : MonoBehaviour {
 	public InputMode GetInputMode() {
 		return m_mode;
 	}
+
+    public void toggleInventory()
+    {
+        if (m_mode == InputMode.IN_INVENTORY)
+        {
+            m_mode = InputMode.WAITING;
+            Debug.Log("waiting");
+        }
+        else
+        {
+            m_mode = InputMode.IN_INVENTORY;
+            Debug.Log("inventory");
+        }
+    }
 
 	public PressState GetPressState() {
 		return m_pressState;
