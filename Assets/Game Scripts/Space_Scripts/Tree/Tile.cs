@@ -39,7 +39,7 @@ public class Tile : TreeObj {
 		{  0.0f,  0.0f,  0.0f,  0.0f,  0.0f,  0.0f,  0.0f }
 	};
 
-	public static int NUM_NEIGHBORS = 12;
+	public static int NUM_NEIGHBORS = 6;
 	
 	private static LatAddr getNeighborLatOffset (int nIndex) {
 		switch (nIndex) {
@@ -55,18 +55,6 @@ public class Tile : TreeObj {
 			return new LatAddr(1,0,1);
 		case 5:
 			return new LatAddr(0,1,1);
-		case 6:
-			return new LatAddr(2,1,0);
-		case 7:
-			return new LatAddr(1,2,0);
-		case 8:
-			return new LatAddr(0,2,1);
-		case 9:
-			return new LatAddr(0,1,2);
-		case 10:
-			return new LatAddr(1,0,2);
-		case 11:
-			return new LatAddr(2,0,1);
 		default:
 			Debug.LogError ("Invalid Neighbor Index");
 			return null;
@@ -85,12 +73,15 @@ public class Tile : TreeObj {
 		return this;
 	}
 
-	// TODO: This function will need to have things added for the different plant behaviors (spread, seed, etc.)
 	public override void updateState () {
 		int prevGrowthState = this.growthState;
 		this.growthState = Tile.getGrowthStateForLevel (this.growthLevel);
 
 		if (prevGrowthState != this.growthState) {
+			if (Random.value <= (this.growthLevel / GROWTH_MAX)) {
+				this.specialAction ();
+			}
+				
 			if (this.tileCont != null) {
 				int [] dir = { 0 };
 				this.tileCont.UpdateTileState(this.tileType, this.growthLevel, dir);
@@ -104,10 +95,13 @@ public class Tile : TreeObj {
 	}
 
 	public override void setState (CanAddr cAddr, TileTypeController.TileType tileType, float growthLevel) {
+		// TODO: If my current Type is Vine, and new type is not vine, Tell your Vine to kill it's children
+		// TODO: If the new type is Vine, and I'm not currently Vine, create new Vine on my location with lot's of chillren's
+
 		this.tileType = tileType;
 		this.growthLevel = growthLevel;
 
-		this.growthState = (int)((Tile.GROWTH_MAX - Tile.GROWTH_MIN) / this.growthLevel);
+		this.growthState = (int) ((Tile.GROWTH_MAX - Tile.GROWTH_MIN) / this.growthLevel);
 		this.fillOutRef ();
 
 		if (this.tileCont != null) {
@@ -137,6 +131,9 @@ public class Tile : TreeObj {
 	public int							growthState	= 0;
 
 	public TileTypeController tileCont = null;
+
+	// NOTE: This field is for Tiles with Vine Type
+	public Vine presentVine = null;
 
 	public Tile (TreeObj prnt, int nextTuple) {
 		this.prnt = prnt;
@@ -199,6 +196,74 @@ public class Tile : TreeObj {
 				lAdd.addLatAddr (Tile.getNeighborLatOffset (i));
 				this.outRef [i] = GridController.getCurInstance ().getTile (CanAddr.convertLatAddrToCanAddr (lAdd));
 			}
+		}
+	}
+
+	// NOTE: This function does the 'special action' which is determined by tile type
+	private void specialAction () {
+		switch (this.tileType) {
+		// NOTE: If adjacent Tilled Tile, spread
+		case TileTypeController.TileType.TILE_BLANK:
+			List<Tile> TilledNeighbors = new List<Tile> ();
+			for (int i = 0; i < NUM_NEIGHBORS; i++) {
+				if (this.outRef [i].tileType == TileTypeController.TileType.TILE_TILLED) {
+					TilledNeighbors.Add (this.outRef [i]);
+				}
+			}
+			// NOTE: Tile doesn't use the CanAddr param, so it can be null
+			TilledNeighbors [Random.Range (0, TilledNeighbors.Count)].setState (null, TileTypeController.TileType.TILE_BLANK, 0f);
+			break;
+		// NOTE: If adjacent Blank Tile, spread
+		case TileTypeController.TileType.TILE_FLOWERS:
+			if (Random.value > 0.6f) {
+				List<Tile> validNeighbors = new List<Tile> ();
+				for (int i = 0; i < NUM_NEIGHBORS; i++) {
+					if (this.outRef [i].tileType == TileTypeController.TileType.TILE_TILLED || this.outRef[i].tileType == TileTypeController.TileType.TILE_BLANK) {
+						validNeighbors.Add (this.outRef [i]);
+					}
+				}
+				validNeighbors [Random.Range (0, validNeighbors.Count)].setState (null, TileTypeController.TileType.TILE_FLOWERS, 0f);
+			}
+			break;
+		// NOTE: Randomly seed new location
+		case TileTypeController.TileType.TILE_TREE:
+			if (Random.value > 0.6f) {
+				// TODO: Pick random tile (that is active) and make it have a 0 growth tree
+			}
+			break;
+		// NOTE: Chance to turn to Vine root
+		case TileTypeController.TileType.TILE_WEEDS:
+			if (Random.value > 0.7f) {
+				this.setState (null, TileTypeController.TileType.TILE_VINE, (GROWTH_MAX - GROWTH_MIN) / 2);
+			}
+			break;
+		// NOTE: Create adjacent connected vine
+		case TileTypeController.TileType.TILE_VINE:
+			if (Random.value > 0.6f) {
+				List<Tile> validNeighbors = new List<Tile> ();
+				for (int i = 0; i < NUM_NEIGHBORS; i++) {
+					if (this.outRef [i].tileType != TileTypeController.TileType.TILE_VINE && 
+						this.outRef [i].tileType != TileTypeController.TileType.TILE_ROCK ) {
+						validNeighbors.Add (this.outRef [i]);
+					}
+				}
+
+				bool hasNew = false;
+				while (!hasNew) {
+					int candidateNeighborIndex = Random.Range (0, validNeighbors.Count);
+					if (validNeighbors [candidateNeighborIndex].tileType == TileTypeController.TileType.TILE_FLOWERS ||
+					    validNeighbors [candidateNeighborIndex].tileType == TileTypeController.TileType.TILE_TREE) {
+						if (validNeighbors [candidateNeighborIndex].growthLevel < (GROWTH_MAX / 2f)) {
+							// TODO: Turn that bitch into a vine yo
+							hasNew = true;
+						}
+					} else {
+						// TODO: Turn that bitch into a vine yo
+						hasNew = true;
+					}
+				}
+			}
+			break;
 		}
 	}
 }

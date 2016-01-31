@@ -22,16 +22,7 @@ public class GridController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		CanAddr tmp = new CanAddr ();
-		GridController.getCurInstance ().setState (tmp, TileTypeController.TileType.TILE_BLANK, 0.0f);
-		tmp.setTuple (0x1, 0);
-		GridController.getCurInstance ().setState (tmp, TileTypeController.TileType.TILE_BLANK, 0.0f);
 		StartCoroutine (runUpdate());
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
 	}
 
 	IEnumerator runUpdate () {
