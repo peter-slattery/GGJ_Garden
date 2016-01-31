@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class TileSingleton : MonoBehaviour {
 
+	public GameObject m_tileParent;
+
     public List<GameObject> m_tilePrefabs;
 	public bool m_shouldOrientVerticals = true;
 
