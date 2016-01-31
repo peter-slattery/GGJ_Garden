@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class VineTileController : TileTypeController {
+public class VineTileController : TileVizController {
 
 	private GameObject m_tendrilParent;
 	private GameObject m_tendrilObject;

@@ -30,6 +30,6 @@ public class TransportationController : MonoBehaviour {
 	}
 
 	private void GoToLevel(string levelName){
-		SceneManager.LoadScene (levelName);
+		SceneManager.LoadScene (levelName);	
 	}
 }

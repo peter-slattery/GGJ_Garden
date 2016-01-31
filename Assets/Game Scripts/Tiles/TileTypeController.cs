@@ -3,47 +3,102 @@ using System.Collections;
 
 public class TileTypeController : MonoBehaviour {
 
-	public float m_variationRadius = .2f;
+    public enum TileVizType
+    {
+        TILE_BLANK,
+        TILE_TILLED,
+        TILE_WEEDS,
+        TILE_VINE,
+        TILE_FLOWERS,
+        TILE_TREE,
+        TILE_ROCK,
+		TILE_EMPTY, // For Testing And Generation Purposes Only. Will Never show up in game
+    };
 
-	private GameObject m_verticalElements;
+	private TileSingleton m_tileSingle;
+
+    public TileVizType m_tileType = TileVizType.TILE_BLANK;
+	public float m_tileGrowth = 0.0f;
+
+	private TileVizController m_typeController;
 
 	// Use this for initialization
-	public virtual void Start () {
-		FindVerticalElement ();
+	void Start () {
+		CreateVisualizationForType ();
+
+		// RegisterTile( 2D position, Tile (byte) type, float Growth Level, TileVizController this)
+		// GridController.getCurInstance().RegisterTile();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+
 	}
 
-	bool FindVerticalElement () {
+	public void UpdateTileState(TileVizType newType, float newGrowth, int[] direction ){
+		if (newType != m_tileType) {
+			// Delete Child Prefab
+			// Instantiate Corret Child Prefab
+		}
+
+		if (newGrowth != m_tileGrowth) {
+			// Update the Visualization To Reflect New Growth
+		}
+
+		if (m_tileType == TileVizType.TILE_VINE && direction[0] != 0) {
+			VineTileController vineTC = m_typeController as VineTileController;
+			vineTC.SetGrowthDirections (direction);
+		}
+	}
+
+	public void EditorUpdateElement (bool vertElem) {
+		if (m_typeController == null) {
+			CreateVisualizationForType ();
+		}
+		if (m_typeController != null) {
+			m_typeController.RandomizeVerticalElements ();
+		}
+	}
+
+	void CreateVisualizationForType(){
+
+		EraseDefaultViz ();
+
+		if (m_tileSingle == null) {
+			m_tileSingle = FindObjectOfType (typeof(TileSingleton)) as TileSingleton;
+		}
+		GameObject prefab = Instantiate (m_tileSingle.GetPrefabOfType (m_tileType), transform.position, Quaternion.identity) as GameObject;
+		prefab.transform.parent = gameObject.transform;
+
+		switch (m_tileType) {
+		case TileVizType.TILE_BLANK:
+			break;
+		case TileVizType.TILE_FLOWERS:
+			break;
+		case TileVizType.TILE_ROCK:
+			break;
+		case TileVizType.TILE_TILLED:
+			break;
+		case TileVizType.TILE_TREE:
+			break;
+		case TileVizType.TILE_VINE:
+			m_typeController = prefab.AddComponent<VineTileController> () as VineTileController;
+			break;
+		case TileVizType.TILE_WEEDS:
+			
+			break;
+		default:	// TILE_BLANK
+			break;
+		}
+	}
+
+	void EraseDefaultViz() {
 		for (int i = 0; i < transform.childCount; i++) {
-			GameObject child = transform.GetChild (i).gameObject;
-			if (child.name == "vertical_elements") {
-				m_verticalElements = child;
+			if (!Application.isPlaying) {
+				DestroyImmediate (transform.GetChild (i).gameObject);
+			} else {
+				Destroy (transform.GetChild (i).gameObject);
 			}
-		}
-
-		if (m_verticalElements == null) {
-			return false;
-		}
-		return true;
-	}
-
-	// NOTE: Override in subclasses
-	public void RandomizeVerticalElements () {
-		if (m_verticalElements == null) {
-			if (!FindVerticalElement ()) {
-				Debug.Log ("Randomize Vertical Elements: No Vertical Elements");
-				return;
-			}
-		}
-
-		for (int i = 0; i < m_verticalElements.transform.childCount; i++) {
-			Vector2 circle = Random.insideUnitCircle;
-			Vector3 XYcircle = new Vector3 (circle.x, 0, circle.y);
-			m_verticalElements.transform.GetChild (i).Translate (XYcircle * m_variationRadius);
 		}
 	}
 }

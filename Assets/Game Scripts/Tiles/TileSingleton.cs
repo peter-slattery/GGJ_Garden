@@ -12,7 +12,7 @@ public class TileSingleton : MonoBehaviour {
 	
 	}
 	
-	public GameObject GetPrefabOfType(TileVizController.TileVizType type)
+	public GameObject GetPrefabOfType(TileTypeController.TileVizType type)
     {
         if (m_tilePrefabs == null || m_tilePrefabs.Count == 0)
         {
@@ -22,15 +22,15 @@ public class TileSingleton : MonoBehaviour {
 
         foreach(GameObject obj in m_tilePrefabs)
         {
-            TileVizController controller = obj.GetComponent<TileVizController>();
+			TilePrefabID id = obj.GetComponent<TilePrefabID>();
 
-            if (controller == null)
+            if (id == null)
             {
-                Debug.Log("GetPrefabOfType: Prefab has no TileVizController");
+                Debug.Log("GetPrefabOfType: Prefab has no TilePrefabID");
                 return null;
             }
 
-            if (controller.m_tileType == type)
+			if (id.m_type == type)
             {
                 return obj;
             }
