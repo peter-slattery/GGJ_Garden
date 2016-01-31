@@ -18,8 +18,7 @@ public class GridController : MonoBehaviour {
 		curInstance = sG;
 	}
 
-	public bool isRunning = false;
-	public bool isPaused = true;
+	public bool isRunning = true;
 
 	// Use this for initialization
 	void Start () {
@@ -36,13 +35,11 @@ public class GridController : MonoBehaviour {
 	}
 
 	IEnumerator runUpdate () {
-		isPaused = false;
 		while (isRunning) {
 			GridController.getCurInstance().updateState();
 			GridController.getCurInstance().updateProperties();
 			yield return SimulationUpdateYield;
 		}
-		isPaused = true;
 	}
 
 	public static Vector2 GridToWorld (CanAddr addr) {

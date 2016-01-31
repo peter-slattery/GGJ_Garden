@@ -39,4 +39,6 @@ public class SpaceGrid {
 		this.setState (cAddr, tileType, growthLevel);
 		this.rootNode.RegisterController (cAddr, tileController);
 	}
+
+
 }

@@ -90,7 +90,6 @@ public class Tile : TreeObj {
 		int prevGrowthState = this.growthState;
 		this.growthState = Tile.getGrowthStateForLevel (this.growthLevel);
 
-		Debug.Log ("Tile: " + this.addr.ToRepr () + " has growth level: " + this.growthLevel + " and growth state: " + this.growthState);
 		if (prevGrowthState != this.growthState) {
 			if (this.tileCont != null) {
 				int [] dir = { 0 };
