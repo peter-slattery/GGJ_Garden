@@ -214,15 +214,19 @@ public class Tile : TreeObj {
 		switch (this.tileType) {
 		// NOTE: If adjacent Tilled Tile, spread
 		case TileTypeController.TileType.TILE_BLANK:
-			List<Tile> TilledNeighbors = new List<Tile> ();
-			for (int i = 0; i < NUM_NEIGHBORS; i++) {
-				if (this.outRef [i].tileType == TileTypeController.TileType.TILE_TILLED) {
-					TilledNeighbors.Add (this.outRef [i]);
+			if (this.growthLevel > (GROWTH_MAX/2) && Random.value > 0.8) {
+				this.setState (this.addr, TileTypeController.TileType.TILE_WEEDS, 0f);
+			} else {
+				List<Tile> TilledNeighbors = new List<Tile> ();
+				for (int i = 0; i < NUM_NEIGHBORS; i++) {
+					if (this.outRef [i].tileType == TileTypeController.TileType.TILE_TILLED) {
+						TilledNeighbors.Add (this.outRef [i]);
+					}
 				}
-			}
-			// NOTE: Tile doesn't use the CanAddr param, so it can be null
-			if (TilledNeighbors.Count != 0) {
-				TilledNeighbors [Random.Range (0, TilledNeighbors.Count-1)].setState (null, TileTypeController.TileType.TILE_BLANK, 0f);
+				// NOTE: Tile doesn't use the CanAddr param, so it can be null
+				if (TilledNeighbors.Count != 0) {
+					TilledNeighbors [Random.Range (0, TilledNeighbors.Count - 1)].setState (null, TileTypeController.TileType.TILE_BLANK, 0f);
+				}
 			}
 			break;
 		// NOTE: If adjacent Blank Tile, spread
