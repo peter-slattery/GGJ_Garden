@@ -214,7 +214,7 @@ public class Tile : TreeObj {
 		switch (this.tileType) {
 		// NOTE: If adjacent Tilled Tile, spread
 		case TileTypeController.TileType.TILE_BLANK:
-			if (this.growthLevel > (GROWTH_MAX/2) && Random.value > 0.8) {
+			if (this.growthLevel > (GROWTH_MAX/2) && Random.value > 0.95) {
 				this.setState (this.addr, TileTypeController.TileType.TILE_WEEDS, 0f);
 			} else {
 				List<Tile> TilledNeighbors = new List<Tile> ();

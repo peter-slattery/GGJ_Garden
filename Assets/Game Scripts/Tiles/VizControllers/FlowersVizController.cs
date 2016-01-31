@@ -71,19 +71,19 @@ public class FlowersVizController : TileVizController {
 					float chanceFlower = Random.Range (0.0f, 10.0f);
 
 					if (chanceFlower + growth > 8.0f) {
-						toInst = flowers [Random.Range (0, lastFlower)];
+						toInst = flowers [0];//Random.Range (0, lastFlower)];
 					} else {
-						toInst = flowerBuds [Random.Range (0, lastBud)];
+						toInst = flowerBuds [0];//Random.Range (0, lastBud)];
 					}
 
 					Vector2 offset = Random.insideUnitCircle;
 
-					GameObject flower = Instantiate (toInst,
+			/*		GameObject flower = Instantiate (toInst,
 						                   m_verticalElements.transform.position + (new Vector3 (offset.x, 0, offset.y) * (1.73f / 2)),
-						                   Quaternion.identity) as GameObject;
+						                   Quaternion.identity) as GameObject;		
 					flower.transform.SetParent (m_verticalElements.transform);
 					flower.SetActive (true);
-
+			*/
 				}
 			} else {
 				for (int i = 0; i > numFlowers; i--) {
