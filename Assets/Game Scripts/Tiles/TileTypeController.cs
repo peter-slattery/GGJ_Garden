@@ -13,6 +13,7 @@ public class TileTypeController : MonoBehaviour {
         TILE_TREE,
         TILE_ROCK,
 		TILE_EMPTY, // For Testing And Generation Purposes Only. Will Never show up in game
+		TILE_RANDOM,
     };
 
 	private TileSingleton m_tileSingle;
@@ -67,6 +68,13 @@ public class TileTypeController : MonoBehaviour {
 		if (m_tileSingle == null) {
 			m_tileSingle = FindObjectOfType (typeof(TileSingleton)) as TileSingleton;
 		}
+
+		if (m_tileType == TileVizType.TILE_RANDOM) {
+			m_tileType = (TileVizType)Random.Range (0, 6);
+			CreateVisualizationForType ();
+			return;
+		}
+
 		GameObject prefab = Instantiate (m_tileSingle.GetPrefabOfType (m_tileType), transform.position, Quaternion.identity) as GameObject;
 		prefab.transform.parent = gameObject.transform;
 
