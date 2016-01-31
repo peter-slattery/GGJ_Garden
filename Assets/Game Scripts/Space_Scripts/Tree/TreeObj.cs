@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 [System.Serializable]
 public abstract class TreeObj {
@@ -30,4 +30,6 @@ public abstract class TreeObj {
 
 	public abstract void setState (CanAddr cAddr, TileTypeController.TileType tileType, float growthLevel);
 	public abstract void RegisterController (CanAddr cAddr, TileTypeController tTCont);
+
+	public abstract void QueryForTileType (List<Tile> workingList, TileTypeController.TileType tileType);
 }

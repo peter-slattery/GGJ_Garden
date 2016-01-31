@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Threading;
-using System.Collections;
+using System.Collections.Generic;
 
 [System.Serializable]
 public class Tile : TreeObj {
@@ -93,7 +93,7 @@ public class Tile : TreeObj {
 		if (prevGrowthState != this.growthState) {
 			if (this.tileCont != null) {
 				int [] dir = { 0 };
-				this.tileCont.UpdateTileState(this.typeIndex, this.growthLevel, dir);
+				this.tileCont.UpdateTileState(this.tileType, this.growthLevel, dir);
 			}
 		}
 	}
@@ -104,7 +104,7 @@ public class Tile : TreeObj {
 	}
 
 	public override void setState (CanAddr cAddr, TileTypeController.TileType tileType, float growthLevel) {
-		this.typeIndex = tileType;
+		this.tileType = tileType;
 		this.growthLevel = growthLevel;
 
 		this.growthState = (int)((Tile.GROWTH_MAX - Tile.GROWTH_MIN) / this.growthLevel);
@@ -112,12 +112,18 @@ public class Tile : TreeObj {
 
 		if (this.tileCont != null) {
 			int [] dir = { 0 };
-			this.tileCont.UpdateTileState(this.typeIndex, this.growthLevel, dir);
+			this.tileCont.UpdateTileState(this.tileType, this.growthLevel, dir);
 		}
 	}
 
 	public override void RegisterController (CanAddr cAddr, TileTypeController tTCont) {
 		this.tileCont = tTCont;
+	}
+
+	public override void QueryForTileType (List<Tile> workingList, TileTypeController.TileType tileType) {
+		if (this.tileType == tileType) {
+			workingList.Add (this);
+		}
 	}
 
 	/* ******************
@@ -126,7 +132,7 @@ public class Tile : TreeObj {
 
 	Tile[] outRef	= new Tile[NUM_NEIGHBORS];
 
-	public TileTypeController.TileType	typeIndex	= TileTypeController.TileType.TILE_ROCK;
+	public TileTypeController.TileType	tileType	= TileTypeController.TileType.TILE_ROCK;
 	public float						growthLevel	= 0x0;
 	public int							growthState	= 0;
 
@@ -138,56 +144,56 @@ public class Tile : TreeObj {
 		this.aggLev = prnt.AggregateLevel - 1;
 		this.addr.setTuple((byte) nextTuple, this.aggLev);
 
-		this.typeIndex = TileTypeController.TileType.TILE_ROCK;
+		this.tileType = TileTypeController.TileType.TILE_ROCK;
 		this.growthState = 0;
 		this.fillOutRef ();
 	}
 
 	public bool isBlank () {
-		return (this.typeIndex == TileTypeController.TileType.TILE_BLANK);
+		return (this.tileType == TileTypeController.TileType.TILE_BLANK);
 	}
 
 	public bool isTilled () {
-		return (this.typeIndex == TileTypeController.TileType.TILE_TILLED);
+		return (this.tileType == TileTypeController.TileType.TILE_TILLED);
 	}
 
 	public bool hasWeeds () {
-		return (this.typeIndex == TileTypeController.TileType.TILE_WEEDS);
+		return (this.tileType == TileTypeController.TileType.TILE_WEEDS);
 	}
 
 	public bool hasVine () {
-		return (this.typeIndex == TileTypeController.TileType.TILE_VINE);
+		return (this.tileType == TileTypeController.TileType.TILE_VINE);
 	}
 
 	public bool hasFlowers () {
-		return (this.typeIndex == TileTypeController.TileType.TILE_FLOWERS);
+		return (this.tileType == TileTypeController.TileType.TILE_FLOWERS);
 	}
 
 	public bool hasTree () {
-		return (this.typeIndex == TileTypeController.TileType.TILE_TREE);
+		return (this.tileType == TileTypeController.TileType.TILE_TREE);
 	}
 
 	public bool isRock () {
-		return (this.typeIndex == TileTypeController.TileType.TILE_ROCK);
+		return (this.tileType == TileTypeController.TileType.TILE_ROCK);
 	}
 
 	private void updateGrowth () {
 		float timeStep = (float) GridController.getCurInstance ().updateDiff.TotalSeconds / Config.TIME_UNIT_STANDARD;
-		this.growthLevel = Mathf.Clamp (this.growthLevel + (Tile.TILE_GROWTH_RATES [(int) this.typeIndex] * timeStep), Tile.GROWTH_MIN, Tile.GROWTH_MAX);
+		this.growthLevel = Mathf.Clamp (this.growthLevel + (Tile.TILE_GROWTH_RATES [(int) this.tileType] * timeStep), Tile.GROWTH_MIN, Tile.GROWTH_MAX);
 	}
 
 	private void AffectNeighbors () {
 		float timeStep = (float) GridController.getCurInstance ().updateDiff.TotalSeconds / Config.TIME_UNIT_STANDARD;
 		for (int i = 0; i < Tile.NUM_NEIGHBORS; i++) {
 			if (this.outRef [i] != null) {
-				this.outRef [i].growthLevel = Mathf.Clamp(this.outRef[i].growthLevel + (Tile.INTER_TILE_EFFECTS [(int) this.typeIndex, (int) this.outRef [i].typeIndex] * timeStep), Tile.GROWTH_MIN, Tile.GROWTH_MAX);
+				this.outRef [i].growthLevel = Mathf.Clamp(this.outRef[i].growthLevel + (Tile.INTER_TILE_EFFECTS [(int) this.tileType, (int) this.outRef [i].tileType] * timeStep), Tile.GROWTH_MIN, Tile.GROWTH_MAX);
 			}
 		}
 	}
 
 	private void fillOutRef () {
 		// TODO: If I am Rock, Tilled, Or Outside (?) do not make outRefs
-		if (this.typeIndex != TileTypeController.TileType.TILE_ROCK && this.typeIndex != TileTypeController.TileType.TILE_TILLED) {
+		if (this.tileType != TileTypeController.TileType.TILE_ROCK && this.tileType != TileTypeController.TileType.TILE_TILLED) {
 			for (int i = 0; i < Tile.NUM_NEIGHBORS; i++) {
 				LatAddr lAdd = CanAddr.convertCanAddrToLatAddr (this.addr);
 				lAdd.addLatAddr (Tile.getNeighborLatOffset (i));

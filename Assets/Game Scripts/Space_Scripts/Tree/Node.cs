@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 [System.Serializable]
 public class Node : TreeObj {
@@ -75,6 +75,14 @@ public class Node : TreeObj {
 		}
 		else {
 			children[childIndex].RegisterController(cAddr, tTCont);
+		}
+	}
+
+	public override void QueryForTileType (List<Tile> workingList, TileTypeController.TileType tileType) {
+		for (int i = 0; i < Node.NUM_CHILDREN; i++) {
+			if (this.children [i] != null) {
+				this.children [i].QueryForTileType (workingList, tileType);
+			}
 		}
 	}
 

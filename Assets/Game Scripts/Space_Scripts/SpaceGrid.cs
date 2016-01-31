@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 [System.Serializable]
 public class SpaceGrid {
@@ -40,5 +40,9 @@ public class SpaceGrid {
 		this.rootNode.RegisterController (cAddr, tileController);
 	}
 
-
+	public List<Tile> QueryForTileType (TileTypeController.TileType tileType) {
+		List<Tile> result = new List<Tile> ();
+		rootNode.QueryForTileType (result, tileType);
+		return result;
+	}
 }
