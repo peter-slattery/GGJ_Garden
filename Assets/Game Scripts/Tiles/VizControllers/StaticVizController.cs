@@ -4,7 +4,7 @@ using System.Collections;
 public class StaticVizController : TileVizController {
 
 	// Use this for initialization
-	void Start () {
+	public override void Start () {
 		base.Start ();
 
 

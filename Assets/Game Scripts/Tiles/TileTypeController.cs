@@ -5,7 +5,7 @@ public class TileTypeController : MonoBehaviour {
 
     public enum TileType
     {
-        TILE_BLANK,
+        TILE_BLANK = 0,
         TILE_TILLED,
         TILE_WEEDS,
         TILE_VINE,
@@ -49,7 +49,7 @@ public class TileTypeController : MonoBehaviour {
 			m_vizController = transform.GetChild (0).GetComponent<TileVizController> ();
 		}
 
-		if (true || newGrowth != m_tileGrowth) {
+		if (newGrowth != m_tileGrowth) {
 			// Update the Visualization To Reflect New Growth
 			m_tileGrowth = newGrowth;
 			m_vizController.UpdateViz (newGrowth);

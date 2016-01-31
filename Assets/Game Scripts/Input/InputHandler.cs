@@ -122,7 +122,7 @@ public class InputHandler : MonoBehaviour {
     }
     public void CloseInventory()
     {
-        m_mode = m_mode = InputMode.WAITING;
+        m_mode = InputMode.WAITING;
     }
     
 	public PressState GetPressState() {

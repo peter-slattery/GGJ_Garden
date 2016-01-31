@@ -55,7 +55,7 @@ public class Animal : MonoBehaviour
             List<Tile> attractedTiles = GridController.getCurInstance().QueryForTileType(AttractedTile);
 
             // Pick a random number between min and max of the attractedTiles
-            int randomIndex = Random.RandomRange(0, (attractedTiles.Count-1));
+            int randomIndex = Random.Range(0, (attractedTiles.Count-1));
 
             // Go to that tile
             Vector2 tempPos = GridController.GridToWorld(attractedTiles[randomIndex].addr);

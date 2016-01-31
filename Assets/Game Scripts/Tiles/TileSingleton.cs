@@ -11,7 +11,7 @@ public class TileSingleton : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-	
+		
 	}
 	
 	public GameObject GetPrefabOfType(TileTypeController.TileType type)

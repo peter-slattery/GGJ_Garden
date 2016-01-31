@@ -15,7 +15,7 @@ public class FlowersVizController : TileVizController {
 	public int m_flowersToGrowthRatio = 5;
 
 	// Use this for initialization
-	void Start () {
+	public override void Start () {
 		base.Start ();
 
 		InitializeFlowerBuds ();
@@ -30,12 +30,12 @@ public class FlowersVizController : TileVizController {
 
 		for (int i = 0; i < m_verticalElements.transform.childCount; i++) {
 			GameObject child = m_verticalElements.transform.GetChild (i).gameObject;
-			if (child.name.Substring (0, 3) == "bud") {
+			if (child.name.Substring (0, 1) == "0") {
 				flowerBuds [nextBud] = child;
 				nextBud++;
-			} else if (child.name.Substring (0, 4) == "bush") {
+			} else if (child.name.Substring (0, 1) == "2") {
 				flowerBush = child;
-			} else if (child.name.Substring (0, 4) == "flower") {
+			} else if (child.name.Substring (0, 1) == "1") {
 				flowers [nextFlower] = child;
 				nextFlower++;
 			}
@@ -44,6 +44,9 @@ public class FlowersVizController : TileVizController {
 
 			numBuds++;
 		}
+
+		lastBud = nextBud - 1;
+		lastFlower = nextFlower - 1;
 	}
 
 	public override void UpdateViz(float growth) {

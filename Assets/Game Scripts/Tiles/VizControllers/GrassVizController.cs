@@ -10,7 +10,7 @@ public class GrassVizController : TileVizController {
 	public int m_grassToGrowthRatio = 5;	
 
 	// Use this for initialization
-	void Start () {
+	public override void Start () {
 		base.Start ();
 
 		InitializeGrassTufts ();
