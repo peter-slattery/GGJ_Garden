@@ -33,10 +33,10 @@ public class FlowersVizController : TileVizController {
 			if (child.name.Substring (0, 3) == "bud") {
 				flowerBuds [nextBud] = child;
 				nextBud++;
-			} else if (child.name.Substring (0, 6) == "flower") {
+			} else if (child.name.Substring (0, 4) == "bush") {
 				flowers [nextFlower] = child;
 				nextFlower++;
-			} else if (child.name.Substring (0, 4) == "bush") {
+			} else if (child.name.Substring (0, 4) == "flower") {
 				flowerBush = child;
 			}
 
