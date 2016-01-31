@@ -92,13 +92,9 @@ public class Tile : TreeObj {
 
 		Debug.Log ("Tile: " + this.addr.ToRepr () + " has growth level: " + this.growthLevel + " and growth state: " + this.growthState);
 		if (prevGrowthState != this.growthState) {
-			
-			// NOTE: This line requires that the ordering of the TileTypeController.TileType matches the Tile type indices at the top of this file
-			TileTypeController.TileType curState = (TileTypeController.TileType) this.typeIndex;
-
 			if (this.tileCont != null) {
 				int [] dir = { 0 };
-				this.tileCont.UpdateTileState(curState, this.growthLevel, dir);
+				this.tileCont.UpdateTileState(this.typeIndex, this.growthLevel, dir);
 			}
 		}
 	}
@@ -108,13 +104,21 @@ public class Tile : TreeObj {
 		this.AffectNeighbors ();
 	}
 
-	public override void setState (CanAddr cAddr, TileTypeController.TileType tileType, float growthLevel, TileTypeController tTController) {
+	public override void setState (CanAddr cAddr, TileTypeController.TileType tileType, float growthLevel) {
 		this.typeIndex = tileType;
 		this.growthLevel = growthLevel;
-		this.tileCont = tTController;
 
 		this.growthState = (int)((Tile.GROWTH_MAX - Tile.GROWTH_MIN) / this.growthLevel);
 		this.fillOutRef ();
+
+		if (this.tileCont != null) {
+			int [] dir = { 0 };
+			this.tileCont.UpdateTileState(this.typeIndex, this.growthLevel, dir);
+		}
+	}
+
+	public override void RegisterController (CanAddr cAddr, TileTypeController tTCont) {
+		this.tileCont = tTCont;
 	}
 
 	/* ******************

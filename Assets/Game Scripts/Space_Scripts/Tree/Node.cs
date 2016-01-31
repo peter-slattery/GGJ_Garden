@@ -42,21 +42,39 @@ public class Node : TreeObj {
 		}
 	}
 
-	public override void setState (CanAddr cAddr, TileTypeController.TileType tileType, float growthLevel, TileTypeController tTController) {
+	public override void setState (CanAddr cAddr, TileTypeController.TileType tileType, float growthLevel) {
 		int childIndex = (int) cAddr.getTuple(this.aggLev - 1);
 
 		if (children[childIndex] == null) {
 			if (this.aggLev == 1) {
 				this.children[childIndex] = new Tile (this, childIndex);
-				this.children[childIndex].setState(cAddr, tileType, growthLevel, tTController);
+				this.children[childIndex].setState(cAddr, tileType, growthLevel);
 			}
 			else {
 				this.children[childIndex] = new Node (this, childIndex);
-				this.children[childIndex].setState(cAddr, tileType, growthLevel, tTController);
+				this.children[childIndex].setState(cAddr, tileType, growthLevel);
 			}
 		}
 		else {
-			children[childIndex].setState(cAddr, tileType, growthLevel, tTController);
+			children[childIndex].setState(cAddr, tileType, growthLevel);
+		}
+	}
+
+	public override void RegisterController (CanAddr cAddr, TileTypeController tTCont) {
+		int childIndex = (int) cAddr.getTuple(this.aggLev - 1);
+
+		if (children[childIndex] == null) {
+			if (this.aggLev == 1) {
+				this.children[childIndex] = new Tile (this, childIndex);
+				this.children[childIndex].RegisterController(cAddr, tTCont);
+			}
+			else {
+				this.children[childIndex] = new Node (this, childIndex);
+				this.children[childIndex].RegisterController(cAddr, tTCont);
+			}
+		}
+		else {
+			children[childIndex].RegisterController(cAddr, tTCont);
 		}
 	}
 

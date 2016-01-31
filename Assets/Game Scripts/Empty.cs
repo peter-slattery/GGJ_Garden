@@ -10,7 +10,8 @@ public class Empty : MonoBehaviour {
 
 	void Update () {
 		if (Input.GetKeyDown (KeyCode.Space)) {
-			GridController.getCurInstance ().getTile (new CanAddr());
+			Debug.Log ("Doing the thing");
+			GridController.getCurInstance ().setState (new CanAddr (), TileTypeController.TileType.TILE_ROCK, 0f);
 		}
 	}
 	
