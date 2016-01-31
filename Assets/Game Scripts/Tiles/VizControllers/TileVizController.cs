@@ -7,14 +7,23 @@ public class TileVizController : MonoBehaviour {
 
 	protected GameObject m_verticalElements;
 
+	protected bool m_initialized = false;
+
 	// Use this for initialization
 	public virtual void Start () {
-		FindVerticalElement ();
+		InitializeViz ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 	
+	}
+
+	public virtual void InitializeViz() {
+		if (!m_initialized) {
+			FindVerticalElement ();
+			m_initialized = true;
+		}
 	}
 
 	bool FindVerticalElement () {

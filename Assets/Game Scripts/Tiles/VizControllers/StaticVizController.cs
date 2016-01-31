@@ -9,6 +9,12 @@ public class StaticVizController : TileVizController {
 
 
 	}
+
+	public override void InitializeViz() {
+		if (!m_initialized) {
+			base.InitializeViz ();
+		}
+	}
 	
 	// Update is called once per frame
 	void Update () {

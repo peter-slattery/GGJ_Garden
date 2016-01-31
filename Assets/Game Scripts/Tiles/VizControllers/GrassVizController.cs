@@ -13,16 +13,20 @@ public class GrassVizController : TileVizController {
 	public override void Start () {
 		base.Start ();
 
-		InitializeGrassTufts ();
+		InitializeViz ();
 	}
 
-	void InitializeGrassTufts () {
-		grassTufts = new GameObject[m_verticalElements.transform.childCount];
+	public override void InitializeViz () {
+		if (!m_initialized) {
+			base.InitializeViz ();
 
-		for (int i = 0; i < m_verticalElements.transform.childCount; i++) {
-			grassTufts [i] = m_verticalElements.transform.GetChild (i).gameObject;
-			grassTufts [i].SetActive (false);
-			numSeeds++;
+			grassTufts = new GameObject[m_verticalElements.transform.childCount];
+
+			for (int i = 0; i < m_verticalElements.transform.childCount; i++) {
+				grassTufts [i] = m_verticalElements.transform.GetChild (i).gameObject;
+				grassTufts [i].SetActive (false);
+				numSeeds++;
+			}
 		}
 	}
 

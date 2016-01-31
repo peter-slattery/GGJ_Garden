@@ -18,40 +18,39 @@ public class FlowersVizController : TileVizController {
 	public override void Start () {
 		base.Start ();
 
-		InitializeFlowerBuds ();
+		InitializeViz ();
 	}
 
-	void Awake() {
-		base.Start ();
-		InitializeFlowerBuds ();
-	}
+	public override void InitializeViz (){
+		if (!m_initialized) {
+			base.InitializeViz ();
 
-	void InitializeFlowerBuds (){
-		flowerBuds = new GameObject[m_verticalElements.transform.childCount];
-		flowers = new GameObject[m_verticalElements.transform.childCount];
+			flowerBuds = new GameObject[m_verticalElements.transform.childCount];
+			flowers = new GameObject[m_verticalElements.transform.childCount];
 
-		int nextBud = 0;
-		int nextFlower = 0;
+			int nextBud = 0;
+			int nextFlower = 0;
 
-		for (int i = 0; i < m_verticalElements.transform.childCount; i++) {
-			GameObject child = m_verticalElements.transform.GetChild (i).gameObject;
-			if (child.name.Substring (0, 1) == "0") {
-				flowerBuds [nextBud] = child;
-				nextBud++;
-			} else if (child.name.Substring (0, 1) == "2") {
-				flowerBush = child;
-			} else if (child.name.Substring (0, 1) == "1") {
-				flowers [nextFlower] = child;
-				nextFlower++;
+			for (int i = 0; i < m_verticalElements.transform.childCount; i++) {
+				GameObject child = m_verticalElements.transform.GetChild (i).gameObject;
+				if (child.name.Substring (0, 1) == "0") {
+					flowerBuds [nextBud] = child;
+					nextBud++;
+				} else if (child.name.Substring (0, 1) == "2") {
+					flowerBush = child;
+				} else if (child.name.Substring (0, 1) == "1") {
+					flowers [nextFlower] = child;
+					nextFlower++;
+				}
+
+				child.SetActive (false);
+
+				numBuds++;
 			}
 
-			child.SetActive (false);
-
-			numBuds++;
+			lastBud = nextBud - 1;
+			lastFlower = nextFlower - 1;
 		}
-
-		lastBud = nextBud - 1;
-		lastFlower = nextFlower - 1;
 	}
 
 	public override void UpdateViz(float growth) {

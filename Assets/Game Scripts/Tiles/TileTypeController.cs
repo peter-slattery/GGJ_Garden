@@ -50,6 +50,10 @@ public class TileTypeController : MonoBehaviour {
 	}
 
 	public void UpdateTileState(TileType newType, float newGrowth, int[] direction ){
+		if (!m_initialized) {
+			InitializeTileController ();
+		}
+
 		if (newType != m_tileType) {
 			m_tileType = newType;
 			CreateVisualizationForType ();
@@ -58,7 +62,7 @@ public class TileTypeController : MonoBehaviour {
 		if (m_vizController == null) {
 			m_vizController = transform.GetChild (0).GetComponent<TileVizController> ();
 			if (m_tileType == TileType.TILE_VINE) {
-				(m_vizController as VineTileController).InitializeVineViz ();
+				(m_vizController as VineTileController).InitializeViz ();
 			}
 		}
 
@@ -100,6 +104,7 @@ public class TileTypeController : MonoBehaviour {
 		m_tileVizPrefab = Instantiate (m_tileSingle.GetPrefabOfType (m_tileType), transform.position, Quaternion.identity) as GameObject;
 		m_tileVizPrefab.transform.parent = gameObject.transform;
 		m_vizController = m_tileVizPrefab.GetComponent<TileVizController> ();
+		m_vizController.InitializeViz ();
 	}
 
 	void EraseDefaultViz() {

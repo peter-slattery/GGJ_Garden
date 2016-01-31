@@ -12,33 +12,28 @@ public class VineTileController : TileVizController {
 	public override void Start () {
 		base.Start ();
 
-		InitializeVineViz ();
+		InitializeViz ();
 	}
 
-	void Awake () {
+	public override void InitializeViz () {
+		if (!m_initialized) {
+			base.InitializeViz ();
 
-	}
-
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
-	public void InitializeVineViz () {
-		// Find Tendril Parent
-		if (m_tendrilObject == null) {
-			for (int i = 0; i < transform.childCount; i++) {
-				GameObject child = transform.GetChild (i).gameObject;
-				if (child.name == "tendril_elements") {
-					m_tendrilParent = child;
-					break;
+			// Find Tendril Parent
+			if (m_tendrilObject == null) {
+				for (int i = 0; i < transform.childCount; i++) {
+					GameObject child = transform.GetChild (i).gameObject;
+					if (child.name == "tendril_elements") {
+						m_tendrilParent = child;
+						break;
+					}
 				}
 			}
-		}
 
-		if (m_tendrilObject == null) {
-			m_tendrilObject = m_tendrilParent.transform.GetChild (0).gameObject;
-			m_tendrilObject.SetActive (false);
+			if (m_tendrilObject == null) {
+				m_tendrilObject = m_tendrilParent.transform.GetChild (0).gameObject;
+				m_tendrilObject.SetActive (false);
+			}
 		}
 	}
 
@@ -81,7 +76,7 @@ public class VineTileController : TileVizController {
 		}
 
 		if (m_tendrilObject == null || m_tendrilParent == null) {
-			InitializeVineViz ();	
+			InitializeViz ();	
 		}
 
 		if (m_tendrilObject == null) {
