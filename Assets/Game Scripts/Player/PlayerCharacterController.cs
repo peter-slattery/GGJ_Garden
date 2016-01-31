@@ -75,7 +75,7 @@ public class PlayerCharacterController : MonoBehaviour {
 
 			Tile nextTile = GridController.getCurInstance ().getTile (GridController.WorldToGrid (onPlane));
 
-			Debug.Log (nextTile.tileType);
+//			Debug.Log (nextTile.tileType);
 
 			if (nextTile.tileType == TileTypeController.TileType.TILE_BLANK ||
 			    nextTile.tileType == TileTypeController.TileType.TILE_FLOWERS ||

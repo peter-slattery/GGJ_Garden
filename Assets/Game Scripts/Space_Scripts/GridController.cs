@@ -22,6 +22,7 @@ public class GridController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+		GridController.CreateGrid (MapArray.mapIntArray, MapArray.mapWidth);
 		StartCoroutine (runUpdate());
 	}
 

@@ -142,7 +142,7 @@ public class Tile : TreeObj {
 	public override void CreateVizForTile (TileSingleton tS) {
 		Vector3 worldVec = GridController.GridToWorld (this.addr);
 		TileTypeController newTile = (GameObject.Instantiate (tS.m_tileParent, worldVec, Quaternion.identity) as GameObject).GetComponent<TileTypeController>() as TileTypeController;
-		newTile.InitializeTileController (false);
+		newTile.InitializeTileController (true);
 		this.UpdateTileViz (newTile);
 	}
 
@@ -201,13 +201,13 @@ public class Tile : TreeObj {
 	}
 
 	private void updateGrowth () {
-		this.growthLevel = Mathf.Clamp (this.growthLevel + (Tile.TILE_GROWTH_RATES [(int) this.tileType]), Tile.GROWTH_MIN, Tile.GROWTH_MAX);
+		this.growthLevel = Mathf.Clamp (this.growthLevel + (Tile.TILE_GROWTH_RATES [(int) this.tileType])*Config.GEN_PARAM, Tile.GROWTH_MIN, Tile.GROWTH_MAX);
 	}
 
 	private void AffectNeighbors () {
 		for (int i = 0; i < Tile.NUM_NEIGHBORS; i++) {
 			if (this.outRef [i] != null) {
-				this.outRef [i].growthLevel = Mathf.Clamp(this.outRef[i].growthLevel + (Tile.INTER_TILE_EFFECTS [(int) this.tileType, (int) this.outRef [i].tileType]), Tile.GROWTH_MIN, Tile.GROWTH_MAX);
+				this.outRef [i].growthLevel = Mathf.Clamp(this.outRef[i].growthLevel + (Tile.INTER_TILE_EFFECTS [(int) this.tileType, (int) this.outRef [i].tileType])*Config.GEN_PARAM, Tile.GROWTH_MIN, Tile.GROWTH_MAX);
 			}
 		}
 	}
@@ -308,6 +308,7 @@ public class Tile : TreeObj {
 	}
 
 	private void GrowVineInto (Tile tileToGrow) {
+		return;
 		LatAddr dest = CanAddr.convertCanAddrToLatAddr (tileToGrow.addr);
 		LatAddr src = CanAddr.convertCanAddrToLatAddr (this.addr);
 

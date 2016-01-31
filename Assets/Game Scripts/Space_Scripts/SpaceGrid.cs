@@ -32,7 +32,7 @@ public class SpaceGrid {
 			int numTiles = 20;
 			for (int j = 0; j < numTiles; j++) {
 				int TileToUpdate = Random.Range (0, MapArray.mapIntArray.Length);
-				CanAddr cAddr = CanAddr.convertLatAddrToCanAddr (new LatAddr ((i % MapArray.mapWidth), ((int)i / MapArray.mapWidth), 0));
+				CanAddr cAddr = CanAddr.convertLatAddrToCanAddr (new LatAddr ((TileToUpdate % MapArray.mapWidth), ((int)TileToUpdate / MapArray.mapWidth), 0));
 				rootNode.updateProperties (cAddr);
 			}
 		}
@@ -46,7 +46,7 @@ public class SpaceGrid {
 
 	public void RegisterTile (Vector3 worldPos, TileTypeController.TileType tileType, float growthLevel, TileTypeController tileController) {
 		CanAddr cAddr = GridController.WorldToGrid (worldPos);
-		this.setState (cAddr, tileType, growthLevel);
+		//this.setState (cAddr, tileType, growthLevel);
 		this.rootNode.RegisterController (cAddr, tileController);
 	}
 
