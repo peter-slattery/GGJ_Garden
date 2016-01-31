@@ -21,7 +21,7 @@ public class TileTypeController : MonoBehaviour {
     public TileType m_tileType = TileType.TILE_BLANK;
 	public float m_tileGrowth = 0.0f;
 
-	private TileVizController m_typeController;
+	private TileVizController m_vizController;
 
 	// Use this for initialization
 	void Start () {
@@ -46,20 +46,22 @@ public class TileTypeController : MonoBehaviour {
 
 		if (newGrowth != m_tileGrowth) {
 			// Update the Visualization To Reflect New Growth
+			m_tileGrowth = newGrowth;
+
 		}
 
 		if (m_tileType == TileType.TILE_VINE && direction[0] != 0) {
-			VineTileController vineTC = m_typeController as VineTileController;
+			VineTileController vineTC = m_vizController as VineTileController;
 			vineTC.SetGrowthDirections (direction);
 		}
 	}
 
 	public void EditorUpdateElement (bool vertElem) {
-		if (m_typeController == null) {
+		if (m_vizController == null) {
 			CreateVisualizationForType ();
 		}
-		if (m_typeController != null) {
-			m_typeController.RandomizeVerticalElements ();
+		if (m_vizController != null) {
+			m_vizController.RandomizeVerticalElements ();
 		}
 	}
 
@@ -92,7 +94,7 @@ public class TileTypeController : MonoBehaviour {
 		case TileType.TILE_TREE:
 			break;
 		case TileType.TILE_VINE:
-			m_typeController = prefab.AddComponent<VineTileController> () as VineTileController;
+			m_vizController = prefab.AddComponent<VineTileController> () as VineTileController;
 			break;
 		case TileType.TILE_WEEDS:
 			

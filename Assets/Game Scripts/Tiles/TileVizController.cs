@@ -46,4 +46,8 @@ public class TileVizController : MonoBehaviour {
 			m_verticalElements.transform.GetChild (i).Translate (XYcircle * m_variationRadius);
 		}
 	}
+
+	public void SetGrowthState (float state) {
+
+	}
 }
