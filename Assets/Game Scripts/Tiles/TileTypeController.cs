@@ -70,6 +70,19 @@ public class TileTypeController : MonoBehaviour {
 			// Update the Visualization To Reflect New Growth
 			m_tileGrowth = newGrowth;
 			m_vizController.UpdateViz (newGrowth);
+
+			float mod = Random.Range (0.0f, 2.0f);
+			if (m_tileGrowth + mod >= 8.0f) {
+				if (m_tileType == TileType.TILE_FLOWERS) {
+					Instantiate (Resources.Load ("Flower"), 
+						transform.position,
+						Quaternion.identity);
+				} else if (m_tileType == TileType.TILE_TREE) {
+					Instantiate (Resources.Load("Apple"),
+						transform.position,
+						Quaternion.identity);
+				}
+			}
 		}
 
 		if (m_tileType == TileType.TILE_VINE && direction[0] != 0) {
