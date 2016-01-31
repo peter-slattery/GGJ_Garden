@@ -28,5 +28,5 @@ public abstract class TreeObj {
 	public abstract void updateState ();
 	public abstract void updateProperties ();
 
-	public abstract void setState (CanAddr cAddr, byte tileType, float growthLevel, TileTypeController tTController);
+	public abstract void setState (CanAddr cAddr, TileTypeController.TileType tileType, float growthLevel, TileTypeController tTController);
 }

@@ -42,7 +42,7 @@ public class Node : TreeObj {
 		}
 	}
 
-	public override void setState (CanAddr cAddr, byte tileType, float growthLevel, TileTypeController tTController) {
+	public override void setState (CanAddr cAddr, TileTypeController.TileType tileType, float growthLevel, TileTypeController tTController) {
 		int childIndex = (int) cAddr.getTuple(this.aggLev - 1);
 
 		if (children[childIndex] == null) {

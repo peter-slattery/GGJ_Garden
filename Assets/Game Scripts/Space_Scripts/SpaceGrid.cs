@@ -29,12 +29,12 @@ public class SpaceGrid {
 		rootNode.updateProperties();
 	}
 	
-	public void setState (CanAddr cAddr, byte tileType, float growthLevel, TileTypeController tileController) {
+	public void setState (CanAddr cAddr, TileTypeController.TileType tileType, float growthLevel, TileTypeController tileController) {
 		if (rootNode == null) { rootNode = new Node(); }
 		rootNode.setState(cAddr, tileType, growthLevel, tileController);
 	}
 
-	public void RegisterTile (Vector2 worldPos, byte tileType, float growthLevel, TileTypeController tileController) {
+	public void RegisterTile (Vector2 worldPos, TileTypeController.TileType tileType, float growthLevel, TileTypeController tileController) {
 		// TODO: convert worldPos to CanAddr and call setState
 	}
 }
