@@ -158,6 +158,7 @@ public class Tile : TreeObj {
 	public int							growthState		= 0;
 	public bool 						isActiveType	= false;
 
+	[System.NonSerialized]
 	public TileTypeController tileCont = null;
 
 	// NOTE: This field is for Tiles with Vine Type

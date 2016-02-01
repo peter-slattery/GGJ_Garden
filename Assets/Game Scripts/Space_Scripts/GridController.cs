@@ -16,14 +16,21 @@ public class GridController : MonoBehaviour {
 
 	public static void setCurInstance (SpaceGrid sG) {
 		curInstance = sG;
+		GridController.CreateVizForCurGrid ();
 	}
 
 	public bool isRunning = true;
 
 	// Use this for initialization
 	void Start () {
-		GridController.CreateGrid (MapArray.mapIntArray, MapArray.mapWidth);
+		if (!StateLoader.loadGame ()) {
+			GridController.CreateGrid (MapArray.mapIntArray, MapArray.mapWidth);
+		}
 		StartCoroutine (runUpdate());
+	}
+
+	void OnApplicationQuit() {
+		StateLoader.saveGame ();
 	}
 
 	IEnumerator runUpdate () {

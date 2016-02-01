@@ -12,7 +12,7 @@ public class StateLoader {
 		outFile.Close ();
 	}
 
-	public static void loadGame () {
+	public static bool loadGame () {
 		if (File.Exists(Application.persistentDataPath + "/gameSave.dat")) {
 			BinaryFormatter bF = new BinaryFormatter();
 			FileStream inFile = File.Open(Application.persistentDataPath + "/gameSave.dat", FileMode.Open);
@@ -20,6 +20,8 @@ public class StateLoader {
 			inFile.Close();
 
 			GameState.applyGameState(gS);
+			return true;
 		}
+		return false;
 	}
 }
