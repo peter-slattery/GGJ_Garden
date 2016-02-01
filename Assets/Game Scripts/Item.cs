@@ -16,8 +16,15 @@ public class Item : MonoBehaviour
     public InteractionState m_state = InteractionState.NoInteraction;
     public bool isRemovedFromInventory; // HACK: see the TODO in Inventory.cs > RemoveItem()
     //public AudioClip PickupSound;
+    //public AudioClip UseSound;
 
+    private AudioSource audioSource;
     bool isCoroutineRunning = false;
+
+    void Awake()
+    {
+        audioSource = GetComponent<AudioSource>();
+    }
 
     void Update()
     {

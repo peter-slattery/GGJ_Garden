@@ -13,10 +13,18 @@ public class Inventory : MonoBehaviour
     public Transform itemContainer;
     public int bagSize = 15;
     public bool isOpen = false;
+    public AudioClip openSound;
+    public AudioClip dropItemSound;
+    public AudioClip useItemSound;
+    public AudioClip failSound;
+    public AudioClip pickupSound;
+
+    private AudioSource audioSource;
 
     void Awake()
     {
         _instance = this;
+        audioSource = GetComponent<AudioSource>();
     }
 
     public void Start ()
@@ -43,6 +51,7 @@ public class Inventory : MonoBehaviour
 
         isOpen = true;
         this.gameObject.SetActive(true);
+        audioSource.PlayOneShot(openSound, 1.0f);
         DisplayItems();
     }
 
@@ -102,12 +111,14 @@ public class Inventory : MonoBehaviour
     {
         if (itemsList.Count < bagSize)
         {
+            audioSource.PlayOneShot(pickupSound, 1.0f);
             Item inventoryItem = item.GetComponent<Item>();
             itemsList.Add(inventoryItem);
             return true;
         }
         else
         {
+            audioSource.PlayOneShot(failSound, 1.0f);
             return false;
         }        
     }
@@ -131,16 +142,19 @@ public class Inventory : MonoBehaviour
                 {
                     Debug.Log("Setting tile to: " + currItem.m_TileType);
                     tileStandingOn.setState(null, currItem.m_TileType, 0f);
+                    audioSource.PlayOneShot(useItemSound, 1.0f);
                     RemoveItem(index, currGameObject);
                 }
                 else
                 {
+                    audioSource.PlayOneShot(failSound, 1.0f);
                     // TODO: play nope noise?
                 }
                 break;
             case ItemType.Tool:
                 Debug.Log("Do a tool thing");
                 tileStandingOn.setState(null, currItem.m_TileType, 0f);
+                audioSource.PlayOneShot(useItemSound, 1.0f);
                 Debug.Log("Setting tile to: " + currItem.m_TileType);
                 break;
             case ItemType.Normal:
@@ -163,6 +177,7 @@ public class Inventory : MonoBehaviour
 
     public void DropItem(GameObject item)
     {
+        audioSource.PlayOneShot(dropItemSound, 1.0f);
         int index = item.GetComponent<InventoryItem>().Index;
         Item currItem = itemsList[index];
 

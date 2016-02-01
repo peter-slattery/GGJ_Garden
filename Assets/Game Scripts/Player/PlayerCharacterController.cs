@@ -94,6 +94,9 @@ public class PlayerCharacterController : MonoBehaviour {
 
     void OnMouseDown()
     {
-        Inventory._instance.Open();
+        if (!Inventory._instance.isOpen)
+        {
+            Inventory._instance.Open();
+        }
     }
 }
