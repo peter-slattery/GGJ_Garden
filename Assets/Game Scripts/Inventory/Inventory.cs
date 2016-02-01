@@ -24,7 +24,8 @@ public class Inventory : MonoBehaviour
     void Awake()
     {
         _instance = this;
-        audioSource = GetComponent<AudioSource>();
+        // HACK: Using the PLayer's AudioSource to play sounds because Items cannot play sounds on pickup (GameObject is destroyed/unaccessible and Inventory is disabled)
+        audioSource = Object.FindObjectOfType<PlayerCharacterController>().GetComponent<AudioSource>();
     }
 
     public void Start ()
