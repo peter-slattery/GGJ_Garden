@@ -33,8 +33,7 @@ public class TileTypeController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		int[] test = { 0 };
-		UpdateTileState (m_tileType, m_tileGrowth, test);
+		
 	}
 
 	public void InitializeTileController(bool register=true) {
@@ -124,11 +123,7 @@ public class TileTypeController : MonoBehaviour {
 
 	void EraseDefaultViz() {
 		for (int i = 0; i < transform.childCount; i++) {
-			if (!Application.isPlaying) {
-				DestroyImmediate (transform.GetChild (i).gameObject);
-			} else {
-				Destroy (transform.GetChild (i).gameObject);
-			}
+			Destroy (transform.GetChild (i).gameObject);
 		}
 	}
 }

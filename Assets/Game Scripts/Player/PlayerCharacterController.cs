@@ -53,7 +53,7 @@ public class PlayerCharacterController : MonoBehaviour {
 
 		int dir = 0;
 
-		float angle = Quaternion.FromToRotation (Vector3.right, toTarget).eulerAngles.y;
+		float angle = Quaternion.FromToRotation (Camera.main.transform.right, toTarget).eulerAngles.y;
 
 		if (angle <= 85 || angle > 320) {
 			dir = 1;

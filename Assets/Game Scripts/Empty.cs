@@ -10,7 +10,7 @@ public class Empty : MonoBehaviour {
 
 	void Update () {
 		if (Input.GetKeyDown (KeyCode.Space)) {
-			GridController.CreateGrid (MapArray.mapIntArray, MapArray.mapWidth);
+			//GridController.CreateGrid (MapArray.mapIntArray, MapArray.mapWidth);
 		}
 		if (Input.GetKeyDown (KeyCode.S)) {
 			

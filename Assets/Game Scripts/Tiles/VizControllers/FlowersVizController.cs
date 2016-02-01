@@ -12,6 +12,8 @@ public class FlowersVizController : TileVizController {
 
 	int numBuds = 0;
 
+	bool hasBush = false;
+
 	public int m_flowersToGrowthRatio = 5;
 
 	// Use this for initialization
@@ -58,10 +60,17 @@ public class FlowersVizController : TileVizController {
 	}
 
 	void ShowFlowersForGrowthLevel (float growth, int flowerRatio){
+
 		if (growth > 7.0f) {
-			GameObject newBush = Instantiate (flowerBush, m_verticalElements.transform.position, flowerBush.transform.rotation) as GameObject;
-			newBush.transform.SetParent (m_verticalElements.transform);
-			newBush.SetActive (true);
+			if (!hasBush) {
+				GameObject newBush = Instantiate (flowerBush, m_verticalElements.transform.position, flowerBush.transform.rotation) as GameObject;
+				newBush.transform.SetParent (m_verticalElements.transform);
+				newBush.SetActive (true);
+				hasBush = true;
+			}
+		} else {
+			int numFlowers = (int)(growth * m_flowersToGrowthRatio);
+
 		}
 	}
 

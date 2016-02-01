@@ -113,6 +113,7 @@ public class Tile : TreeObj {
 		if (tileType != TileTypeController.TileType.TILE_VINE && this.tileType == TileTypeController.TileType.TILE_VINE) {
 			this.tileType = tileType;
 			this.presentVine.killChildren();
+			this.presentVine = null;
 		}
 
 		if (this.tileType != TileTypeController.TileType.TILE_VINE && tileType == TileTypeController.TileType.TILE_VINE) {
